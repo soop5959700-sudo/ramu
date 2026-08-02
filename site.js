@@ -19,6 +19,13 @@
     link.addEventListener("click", () => body.classList.remove("nav-open"));
   });
 
+  document.addEventListener("click", (event) => {
+    if (!body.classList.contains("nav-open")) return;
+    if (event.target.closest(".site-nav")) return;
+    body.classList.remove("nav-open");
+    toggle?.setAttribute("aria-expanded", "false");
+  });
+
   document.querySelectorAll("[data-placeholder]").forEach((link) => {
     link.addEventListener("click", (event) => event.preventDefault());
   });
