@@ -1299,3 +1299,28 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
+
+/* Only shown inside a SOOP post: the app cannot render the desktop layout in an iframe,
+   so offer to open the real page in the browser, where it does. */
+.open-full { display: none; }
+
+body.embed .open-full {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 0 13px;
+  color: var(--ink);
+  background: var(--peach);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+body.embed .nav-links { margin-left: auto; }
+
+@media (max-width: 820px) {
+  body.embed .open-full { margin-left: auto; margin-right: 8px; font-size: 12px; padding: 0 11px; }
+  body.embed .theme-toggle { margin-left: 0; }
+}
