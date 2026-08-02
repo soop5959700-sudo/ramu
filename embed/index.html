@@ -6,87 +6,36 @@
     <title>라무 LAMU</title>
     <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
     <style>
-      html, body { margin: 0; padding: 0; background: #160f0d; overflow: hidden; }
-      #stage { position: relative; width: 100%; overflow: hidden; }
-      #site { display: block; border: 0; background: #160f0d; transform-origin: top left; }
+      html, body { margin: 0; padding: 0; height: 100%; background: #160f0d; overflow: hidden; }
+      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      #site { display: block; border: 0; background: #160f0d; transform-origin: top left; width: 100%; height: 100%; }
     </style>
   </head>
   <body>
     <div id="stage"><iframe id="site" scrolling="no" title="라무 LAMU"></iframe></div>
     <script>
-      /* ?p=profile 처럼 첫 화면을 지정할 수 있음 (비우면 메인) */
+      /* One measurement, one assignment, then nothing moves again.
+         No observers, no timers, no messages to the parent: the SOOP app reloads the post
+         whenever the embedded frame keeps changing after load. */
       (function () {
+        var DESIGN = 1180;   /* layout width handed to the site (smaller = bigger type) */
+        var WIDE = 980;      /* at or above this the site is shown 1:1 */
+
         var pages = ['profile', 'schedule', 'song', 'work', 'diary', 'dress'];
         var m = /[?&]p=([a-z]+)/.exec(location.search);
         var start = (m && pages.indexOf(m[1]) > -1) ? '../' + m[1] + '/?in=1' : '../index.html?in=1';
-        var f = document.getElementById('site');
-        f.name = 'ramuInner';        /* pages check window.name and skip the wrapper redirect */
-        f.src = start;
-      })();
-    </script>
-    <script>
-      /* SOOP app gives this frame the phone width, so the site inside would pick its mobile layout.
-         The inner frame is laid out at DESIGN px (desktop breakpoints) and scaled down to fit. */
-      (function () {
-        /* Never wrap a wrapper: if this file somehow ends up inside itself, stop. */
-        try {
-          if (window.self !== window.top && window.parent.document.getElementById('site')) {
-            location.replace('../index.html?in=1');
-            return;
-          }
-        } catch (e) {}
 
-        var DESIGN = 1180;    /* layout width handed to the site */
-        var WIDE = 980;       /* at or above this the site is shown 1:1 */
         var frame = document.getElementById('site');
-        var stage = document.getElementById('stage');
-        var ro = null;
+        var w = document.documentElement.clientWidth || window.innerWidth || DESIGN;
+        var h = document.documentElement.clientHeight || window.innerHeight || 2500;
 
-        function measure() {
-          try {
-            var d = frame.contentDocument;
-            if (!d || !d.body) return 0;
-            /* Measure the last real element, not the document: the cover page sets body{height:100%},
-               so body/documentElement height only mirrors whatever height we just gave the frame. */
-            var anchor = d.querySelector('.site-footer') || d.querySelector('.main-cover');
-            if (anchor) {
-              var r = anchor.getBoundingClientRect();
-              return Math.ceil(r.bottom + (d.defaultView ? d.defaultView.scrollY : 0));
-            }
-            return Math.max(d.body.scrollHeight, d.body.offsetHeight);
-          } catch (e) { return 0; }
+        if (w < WIDE) {
+          var scale = w / DESIGN;
+          frame.style.width = DESIGN + 'px';
+          frame.style.height = Math.round(h / scale) + 'px';
+          frame.style.transform = 'scale(' + scale + ')';
         }
-
-        function layout() {
-          var w = document.documentElement.clientWidth || window.innerWidth;
-          var scale = w >= WIDE ? 1 : w / DESIGN;
-          var innerW = scale === 1 ? w : DESIGN;
-          frame.style.width = innerW + 'px';
-          frame.style.transform = scale === 1 ? 'none' : 'scale(' + scale + ')';
-          var h = measure();
-          if (!h) h = Math.round(Math.min(window.innerHeight || 900, w * 0.5625 + 40) / scale);
-          frame.style.height = h + 'px';
-          stage.style.height = Math.ceil(h * scale) + 'px';
-        }
-
-
-        function watch() {
-          if (ro) { ro.disconnect(); ro = null; }
-          try {
-            var d = frame.contentDocument;
-            if (d && d.body && window.ResizeObserver) {
-              ro = new ResizeObserver(layout);
-              ro.observe(d.body);
-            }
-          } catch (e) {}
-        }
-
-        frame.addEventListener('load', function () {
-          layout(); watch();
-          [200, 700, 1500, 3000].forEach(function (t) { setTimeout(layout, t); });
-        });
-        window.addEventListener('resize', layout);
-        layout();
+        frame.src = start;
       })();
     </script>
   </body>
