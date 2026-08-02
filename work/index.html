@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#201512" />
+    <meta name="description" content="토리들이 차곡차곡 쌓은 라무 업보 장부" />
+    <title>업보 · 라무 LAMU</title>
+    <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .work-tools { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; margin-bottom: 18px; }
+      .work-tools .form-control { min-height: 46px; }
+      .update-date { color: rgba(255, 253, 250, 0.5); font-size: 12.5px; font-weight: 800; letter-spacing: 0.06em; }
+      .viewer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 14px; }
+      .viewer-card { display: grid; justify-items: center; gap: 8px; padding: 20px 12px 16px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); text-align: center; cursor: pointer; transition: var(--transition); }
+      .viewer-card:hover { background: rgba(255, 210, 154, 0.07); border-color: rgba(255, 210, 154, 0.4); }
+      .viewer-av, .viewer-av-fb { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 235, 215, 0.35); }
+      .viewer-av-fb { display: flex; align-items: center; justify-content: center; color: var(--ink); background: var(--pink); font-family: var(--hand); font-size: 26px; font-weight: 700; }
+      .viewer-nick { overflow: hidden; max-width: 100%; font-size: calc(14.5px * var(--fs-body, 1)); font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+      .viewer-id { overflow: hidden; max-width: 100%; color: rgba(255, 253, 250, 0.42); font-size: 11.5px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+      .viewer-total { display: inline-flex; align-items: center; gap: 4px; padding: 4px 11px; color: var(--ink); background: var(--peach); border-radius: 999px; font-size: 12px; font-weight: 900; }
+      .modal-top { display: flex; align-items: center; gap: 13px; margin-bottom: 14px; }
+      .modal-av, .modal-av-fb { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 235, 215, 0.35); }
+      .modal-av-fb { display: flex; align-items: center; justify-content: center; color: var(--ink); background: var(--pink); font-family: var(--hand); font-size: 22px; font-weight: 700; }
+      .modal-nick { font-size: 18px; font-weight: 900; }
+      .modal-id { color: rgba(255, 253, 250, 0.45); font-size: 12px; font-weight: 600; }
+      .modal-x { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; margin-left: auto; color: var(--white); background: rgba(255, 255, 255, 0.07); border: 1px solid var(--line); border-radius: 50%; font-size: 14px; cursor: pointer; }
+      .upbo-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.09); }
+      .upbo-row:last-child { border-bottom: 0; }
+      .upbo-row .nm { flex: 1; font-size: calc(14.5px * var(--fs-body, 1)); font-weight: 700; }
+      .upbo-row .evb { padding: 2px 9px; color: #7a5410; background: #ffe4ad; border-radius: 999px; font-size: 10px; font-weight: 900; }
+      .upbo-row .ct { color: var(--peach); font-size: 15px; font-weight: 900; }
+      .modal-empty { padding: 22px 0 8px; color: rgba(255, 253, 250, 0.5); font-size: 14px; font-weight: 700; text-align: center; }
+      @media (max-width: 640px) { .work-tools { grid-template-columns: 1fr; } .viewer-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } }
+    </style>
+    <noscript><style>body{opacity:1!important}</style></noscript>
+  </head>
+  <body data-page="work">
+    <script>
+      if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+      try { if (window.self !== window.top) document.body.classList.add('embed'); }
+      catch (e) { document.body.classList.add('embed'); }
+    </script>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="site-nav">
+      <div class="nav-shell">
+        <a class="nav-brand" href="../index.html">라무 <small>LAMU</small></a>
+        <nav class="nav-links" aria-label="주요 메뉴">
+          <a data-path href="../index.html">메인</a>
+          <a data-path href="../profile/">프로필</a>
+          <a data-path href="../schedule/">일정</a>
+          <a data-path href="../song/">노래책</a>
+          <a data-path href="../work/">업보</a>
+          <a data-path href="../diary/">일기</a>
+          <a data-path href="../dress/">옷장</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </nav>
+        <button class="theme-toggle" id="themeSwitch" type="button" aria-label="밝기 바꾸기"><span class="tt-knob"></span></button>
+        <a class="nav-live" id="nav-live" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">18:00 LIVE</a>
+        <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+
+    <main id="main" class="page page-main">
+      <div class="page-shell">
+        <header class="page-heading">
+          <div>
+            <p class="page-kicker">KARMA LEDGER</p>
+            <h1 class="page-title">도토리 장부<small>UPBO</small></h1>
+          </div>
+          <p class="page-lead" >토리들이 쌓은 업보를 도토리처럼 차곡차곡. 카드를 누르면 내역이 펼쳐져요.</p>
+          <span class="ghost-word" aria-hidden="true">UPBO</span>
+        </header>
+
+
+        <section class="glass-panel">
+          <div class="panel-head">
+            <h2 class="panel-title">토리 명단</h2>
+            <span class="panel-note" id="update-date"></span>
+          </div>
+          <div class="work-tools">
+            <input class="form-control" id="search" type="search" placeholder="닉네임이나 아이디로 찾기" />
+            <span class="update-date">카드를 누르면 장부가 펼쳐져요</span>
+          </div>
+          <div class="viewer-grid" id="grid"></div>
+        </section>
+      </div>
+
+      <footer class="site-footer">
+        <span>© 2026 RAMU OFFICIAL</span>
+        <div class="footer-links">
+          <a id="foot-soop" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">SOOP</a>
+          <a id="foot-youtube" href="https://www.youtube.com/channel/UCB92EOmXDyyrulIm6cQm8AA" target="_blank" rel="noreferrer">YOUTUBE</a>
+          <a id="foot-cafe" href="https://cafe.naver.com/ramujjang" target="_blank" rel="noreferrer">CAFE</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </div>
+      </footer>
+    </main>
+
+    <div class="ov-mask" id="askmaskbg" onclick="closeAsk()"></div>
+    <div class="ov" id="askmask">
+      <div class="ov-box">
+        <p class="ask-kicker">MAIL TO RAMU</p>
+        <h2 class="ask-title">라무에게 한 장</h2>
+        <p class="ask-sub">남긴 내용은 라무만 확인해요.</p>
+        <textarea class="form-control" id="askmsg" rows="5" placeholder="하고 싶은 말을 적어주세요"></textarea>
+        <div class="ask-actions">
+          <button class="outline-button" type="button" onclick="closeAsk()">닫기</button>
+          <button class="soft-button" type="button" onclick="sendAsk()">보내기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ov-mask" id="ovbg" onclick="closeModal()"></div>
+    <div class="ov" id="ov">
+      <div class="ov-box">
+        <div class="modal-top" id="modal-top"></div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <div id="fx" aria-hidden="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../supabase.js"></script>
+    <script src="../common.js"></script>
+    <script>
+      /* upbo — contract: 기능배선_카테고리 §3 (card grid + detail modal, no table matrix) */
+      let viewers = [], types = [], counts = [];
+      async function init() {
+        [viewers, types, counts] = await Promise.all([
+          fetchAll('viewers',     { order: 'sort_order', asc: true }),
+          fetchAll('upbo_types',  { order: 'sort_order', asc: true }),
+          fetchAll('upbo_counts', { order: 'id',         asc: true })
+        ]);
+        const latest = counts.reduce((m, c) => c.updated_at && c.updated_at > m ? c.updated_at : m, '');
+        document.getElementById('update-date').textContent = latest ? 'UPDATED · ' + latest.slice(0, 10) : '';
+        render(viewers); enableIframeAutoHeight();
+      }
+      function viewerTotal(vid) { return counts.filter(c => c.viewer_id === vid && c.count > 0).reduce((s, c) => s + c.count, 0); }
+      function avHtml(v, cls) {
+        const av = soopAvatar(v.soop_id); const ini = esc((v.nickname || '?').charAt(0));
+        return av ? `<img class="${cls}" src="${av}" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=\\'${cls}-fb\\'>${ini}</div>'">`
+                  : `<div class="${cls}-fb">${ini}</div>`;
+      }
+      function render(list) {
+        const grid = document.getElementById('grid');
+        if (!list.length) { grid.innerHTML = '<div class="empty"><span class="empty-icon">🐿️</span>장부에 오른 토리가 아직 없어요</div>'; enableIframeAutoHeight(); return; }
+        grid.innerHTML = list.map(v => `<div class="viewer-card" onclick="openModal(${v.id})">
+            ${avHtml(v, 'viewer-av')}
+            <div class="viewer-nick">${esc(v.nickname)}</div>
+            ${v.soop_id ? `<div class="viewer-id">(${esc(v.soop_id)})</div>` : '<div class="viewer-id">&nbsp;</div>'}
+            <span class="viewer-total">🌰 업보 ${viewerTotal(v.id)}</span>
+          </div>`).join('');
+        enableIframeAutoHeight();
+      }
+      function openModal(vid) {
+        const v = viewers.find(x => x.id === vid); if (!v) return;
+        document.getElementById('modal-top').innerHTML = `${avHtml(v, 'modal-av')}
+          <div><div class="modal-nick">${esc(v.nickname)}</div>${v.soop_id ? `<div class="modal-id">(${esc(v.soop_id)})</div>` : ''}</div>
+          <button class="modal-x" onclick="closeModal()">✕</button>`;
+        const my = {}; counts.filter(c => c.viewer_id === vid).forEach(c => { my[c.type_id] = c.count; });
+        const rows = types.filter(t => (my[t.id] || 0) > 0).map(t => `<div class="upbo-row">
+            <span class="nm">${esc(t.name)}</span>
+            ${t.category === '이벤트' ? '<span class="evb">이벤트</span>' : ''}
+            <span class="ct">×${my[t.id]}</span>
+          </div>`).join('');
+        document.getElementById('modal-body').innerHTML = rows || '<div class="modal-empty">아직 쌓인 업보가 없어요. 착한 토리 🌱</div>';
+        document.getElementById('ovbg').classList.add('show');
+        placeOverlay(document.getElementById('ov'));
+      }
+      function closeModal() {
+        document.getElementById('ov').classList.remove('show');
+        document.getElementById('ovbg').classList.remove('show');
+      }
+      document.getElementById('search').addEventListener('input', e => {
+        const q = e.target.value.trim().toLowerCase();
+        render(viewers.filter(v => (v.nickname || '').toLowerCase().includes(q) || (v.soop_id || '').toLowerCase().includes(q)));
+      });
+      init();
+    </script>
+    <script src="../site.js"></script>
+    <script src="../fx.js"></script>
+
+  </body>
+</html>

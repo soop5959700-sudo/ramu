@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#201512" />
+    <meta name="description" content="그날그날의 라무를 담은 다람쥐 일지" />
+    <title>일기 · 라무 LAMU</title>
+    <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .diary-list { display: grid; gap: 14px; }
+      .diary-item { position: relative; overflow: hidden; background: linear-gradient(150deg, rgba(34, 21, 16, 0.86), rgba(21, 12, 10, 0.68)); border: 1px solid rgba(255, 235, 215, 0.14); border-radius: var(--radius-md); box-shadow: var(--shadow); }
+      .diary-item::before { position: absolute; z-index: 2; top: -11px; left: 30px; width: 66px; height: 20px; background: linear-gradient(90deg, rgba(255, 206, 165, 0.5), rgba(255, 242, 207, 0.85), rgba(255, 193, 181, 0.5)); border: 1px solid rgba(255, 255, 255, 0.35); content: ""; transform: rotate(-2deg); }
+      .diary-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 13px; padding: 18px 20px; cursor: pointer; }
+      .diary-mood { font-size: 22px; }
+      .diary-title { overflow: hidden; font-family: var(--hand); font-size: calc(clamp(21px, 1.7vw, 26px) * var(--fs-title, 1)); font-weight: 700; letter-spacing: -0.03em; text-overflow: ellipsis; white-space: nowrap; }
+      .diary-date { color: var(--peach); font-size: 12.5px; font-weight: 900; letter-spacing: 0.06em; }
+      .diary-content { display: none; padding: 0 20px 20px; font-size: calc(15px * var(--fs-body, 1)); font-weight: 500; line-height: 1.85; color: rgba(255, 253, 250, 0.88); }
+      .diary-item.open .diary-content { display: block; }
+      .post-img { width: 100%; margin: 4px 0 14px; border-radius: 10px; }
+      .cmt-wrap { display: grid; grid-template-columns: 120px 1fr auto; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed rgba(255, 210, 154, 0.35); }
+      .cmt-head { grid-column: 1 / -1; color: var(--pink); font-size: calc(11.5px * var(--fs-label, 1)); font-weight: 900; letter-spacing: 0.14em; }
+      .cmt-list { display: grid; grid-column: 1 / -1; gap: 7px; }
+      .cmt-item { display: flex; align-items: baseline; gap: 9px; font-size: 13.5px; }
+      .cmt-item .cn { flex: 0 0 auto; color: var(--peach); font-weight: 900; }
+      .cmt-item .cm { color: rgba(255, 253, 250, 0.85); font-weight: 500; overflow-wrap: anywhere; }
+      .cmt-empty { color: rgba(255, 253, 250, 0.4); font-size: 12.5px; font-weight: 600; }
+      .cmt-wrap .form-control { min-height: 42px; padding: 0 13px; font-size: 13.5px; }
+      .cmt-send { display: inline-flex; min-height: 42px; align-items: center; padding: 0 16px; color: var(--ink); background: var(--peach); border: 0; border-radius: 999px; font-size: 13px; font-weight: 900; cursor: pointer; }
+      @media (max-width: 640px) {
+        .cmt-wrap { grid-template-columns: 1fr auto; }
+        .cmt-wrap .cmt-nick { grid-column: 1 / -1; }
+        .diary-header { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "mood date" "mood title"; row-gap: 2px; column-gap: 11px; padding: 15px 17px; }
+        .diary-mood { grid-area: mood; }
+        .diary-title { grid-area: title; white-space: normal; }
+        .diary-date { grid-area: date; justify-self: start; font-size: 11.5px; }
+      }
+    </style>
+    <noscript><style>body{opacity:1!important}</style></noscript>
+  </head>
+  <body data-page="diary">
+    <script>
+      if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+      try { if (window.self !== window.top) document.body.classList.add('embed'); }
+      catch (e) { document.body.classList.add('embed'); }
+    </script>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="site-nav">
+      <div class="nav-shell">
+        <a class="nav-brand" href="../index.html">라무 <small>LAMU</small></a>
+        <nav class="nav-links" aria-label="주요 메뉴">
+          <a data-path href="../index.html">메인</a>
+          <a data-path href="../profile/">프로필</a>
+          <a data-path href="../schedule/">일정</a>
+          <a data-path href="../song/">노래책</a>
+          <a data-path href="../work/">업보</a>
+          <a data-path href="../diary/">일기</a>
+          <a data-path href="../dress/">옷장</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </nav>
+        <button class="theme-toggle" id="themeSwitch" type="button" aria-label="밝기 바꾸기"><span class="tt-knob"></span></button>
+        <a class="nav-live" id="nav-live" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">18:00 LIVE</a>
+        <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+
+    <main id="main" class="page page-main">
+      <div class="page-shell">
+        <header class="page-heading">
+          <div>
+            <p class="page-kicker">DAILY NUTS</p>
+            <h1 class="page-title">라무 일지<small>DIARY</small></h1>
+          </div>
+          <p class="page-lead" >그날그날의 라무를 눌러서 펼쳐보세요. 토리의 답장도 남길 수 있어요.</p>
+          <span class="ghost-word" aria-hidden="true">DIARY</span>
+        </header>
+
+
+        <section class="glass-panel">
+          <div class="panel-head">
+            <h2 class="panel-title">그날그날의 라무</h2>
+            <span class="panel-note">TAP TO OPEN</span>
+          </div>
+          <div class="diary-list" id="diary-list"></div>
+          <div class="pg-row" id="pagination"></div>
+        </section>
+      </div>
+
+      <footer class="site-footer">
+        <span>© 2026 RAMU OFFICIAL</span>
+        <div class="footer-links">
+          <a id="foot-soop" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">SOOP</a>
+          <a id="foot-youtube" href="https://www.youtube.com/channel/UCB92EOmXDyyrulIm6cQm8AA" target="_blank" rel="noreferrer">YOUTUBE</a>
+          <a id="foot-cafe" href="https://cafe.naver.com/ramujjang" target="_blank" rel="noreferrer">CAFE</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </div>
+      </footer>
+    </main>
+
+    <div class="ov-mask" id="askmaskbg" onclick="closeAsk()"></div>
+    <div class="ov" id="askmask">
+      <div class="ov-box">
+        <p class="ask-kicker">MAIL TO RAMU</p>
+        <h2 class="ask-title">라무에게 한 장</h2>
+        <p class="ask-sub">남긴 내용은 라무만 확인해요.</p>
+        <textarea class="form-control" id="askmsg" rows="5" placeholder="하고 싶은 말을 적어주세요"></textarea>
+        <div class="ask-actions">
+          <button class="outline-button" type="button" onclick="closeAsk()">닫기</button>
+          <button class="soft-button" type="button" onclick="sendAsk()">보내기</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="fx" aria-hidden="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../supabase.js"></script>
+    <script src="../common.js"></script>
+    <script>
+      /* diary — contract: 기능배선_카테고리 §4 (page 15, lazy comments, Enter submit, escape) */
+      const PAGE_SIZE = 15;
+      let allData = [], currentPage = 1;
+      const MOODS = { '기쁨': '😆', '행복': '🥰', '뿌듯': '😤', '피곤': '😪', '슬픔': '😢', '화남': '😡' };
+      async function init() { allData = await fetchAll('diary', { order: 'diary_date', asc: false }); renderPage(1); enableIframeAutoHeight(); }
+      function renderPage(page) {
+        currentPage = page;
+        const items = allData.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+        const el = document.getElementById('diary-list');
+        if (!allData.length) { el.innerHTML = '<div class="empty"><span class="empty-icon">📔</span>라무가 아직 일지를 안 썼어요</div>'; document.getElementById('pagination').innerHTML = ''; return; }
+        el.innerHTML = items.map(d => {
+          const imgs = (d.images && d.images.length) ? d.images : (d.image_url ? [d.image_url] : []);
+          return `<div class="diary-item" data-id="${d.id}">
+            <div class="diary-header" onclick="toggleDiary(this)">
+              <span class="diary-mood">${MOODS[d.mood] || d.mood || '🌰'}</span>
+              <span class="diary-title">${esc(d.title)}</span>
+              <span class="diary-date">${d.diary_date || ''}</span>
+            </div>
+            <div class="diary-content">
+              ${imgs.map(u => `<img src="${esc(u)}" class="post-img" referrerpolicy="no-referrer" loading="lazy" alt="">`).join('')}
+              ${esc(d.content).replace(/\n/g, '<br>')}
+              <div class="cmt-wrap">
+                <span class="cmt-head">토리의 답장</span>
+                <div class="cmt-list" id="cmt-list-${d.id}"></div>
+                <input class="form-control cmt-nick" id="cmt-nick-${d.id}" placeholder="닉네임" onclick="event.stopPropagation()">
+                <input class="form-control cmt-msg" id="cmt-msg-${d.id}" placeholder="답장 남기기..." onclick="event.stopPropagation()"
+                       onkeydown="if(event.key==='Enter')addComment(${d.id})">
+                <button class="cmt-send" onclick="event.stopPropagation();addComment(${d.id})">등록</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+        const totalPages = Math.ceil(allData.length / PAGE_SIZE);
+        const pg = document.getElementById('pagination'); pg.innerHTML = '';
+        if (totalPages > 1) for (let i = 1; i <= totalPages; i++) {
+          const b = document.createElement('button');
+          b.className = 'pg' + (i === page ? ' active' : ''); b.textContent = i;
+          b.onclick = () => { renderPage(i); enableIframeAutoHeight(); window.scrollTo(0, 0); };
+          pg.appendChild(b);
+        }
+      }
+      function toggleDiary(headerEl) {
+        const item = headerEl.closest('.diary-item');
+        const wasOpen = item.classList.contains('open');
+        item.classList.toggle('open');
+        if (!wasOpen) { loadComments(item.dataset.id); }
+        enableIframeAutoHeight();
+      }
+      async function loadComments(diaryId) {
+        const list = document.getElementById('cmt-list-' + diaryId); if (!list) return;
+        const all = await fetchAll('comments', { order: 'created_at', asc: true });
+        const mine = all.filter(c => String(c.diary_id) === String(diaryId));
+        list.innerHTML = mine.length
+          ? mine.map(c => `<div class="cmt-item"><span class="cn">${esc(c.nickname || '토리')}</span><span class="cm">${esc(c.message)}</span></div>`).join('')
+          : '<div class="cmt-empty">첫 답장을 기다리는 중</div>';
+        enableIframeAutoHeight();
+      }
+      async function addComment(diaryId) {
+        const msgEl = document.getElementById('cmt-msg-' + diaryId);
+        const msg = msgEl.value.trim();
+        if (!msg) { alert('답장을 입력해주세요'); return; }
+        const nick = document.getElementById('cmt-nick-' + diaryId).value.trim() || '토리';
+        const ok = await insertRow('comments', { diary_id: diaryId, nickname: nick, message: msg });
+        if (ok) { msgEl.value = ''; loadComments(diaryId); } else alert('답장 등록에 실패했어요');
+      }
+      init();
+    </script>
+    <script src="../site.js"></script>
+    <script src="../fx.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#201512" />
+    <meta name="description" content="새 옷은 포스터로, 지난 옷은 앨범으로 — 라무 룩북" />
+    <title>옷장 · 라무 LAMU</title>
+    <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .dress-tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+      .seg { display: inline-flex; gap: 4px; padding: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 999px; }
+      .seg-btn { display: inline-flex; min-height: 38px; align-items: center; padding: 0 16px; color: rgba(255, 253, 250, 0.62); background: transparent; border: 0; border-radius: 999px; font-size: 13.5px; font-weight: 800; cursor: pointer; transition: var(--transition); }
+      .seg-btn.active { color: var(--ink); background: var(--peach); }
+      .cat-row { display: flex; flex-wrap: wrap; gap: 8px; }
+      .cat-tab { display: inline-flex; min-height: 36px; align-items: center; gap: 7px; padding: 0 15px; color: rgba(255, 253, 250, 0.66); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 999px; font-size: 13px; font-weight: 800; cursor: pointer; transition: var(--transition); }
+      .cat-tab.active { color: var(--ink); background: var(--pink); border-color: transparent; }
+      .cat-tab .cnt { padding: 1px 8px; background: rgba(0, 0, 0, 0.14); border-radius: 999px; font-size: 11px; font-weight: 900; }
+      .cat-tab:not(.active) .cnt { background: rgba(255, 255, 255, 0.1); }
+      .poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+      .poster { position: relative; overflow: hidden; aspect-ratio: 3 / 4; background: #241812; border: 1px solid rgba(255, 235, 215, 0.16); border-radius: 12px; cursor: pointer; }
+      .poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .poster .ph-ph { position: absolute; inset: 0 0 38%; display: flex; align-items: center; justify-content: center; font-size: 44px; opacity: 0.4; }
+      .poster::after { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(12, 6, 4, 0.88) 0%, rgba(12, 6, 4, 0.25) 34%, transparent 55%), linear-gradient(180deg, rgba(12, 6, 4, 0.55) 0%, transparent 26%); content: ""; }
+      .p-top { position: absolute; z-index: 2; top: 12px; right: 12px; left: 12px; display: flex; align-items: center; justify-content: space-between; }
+      .p-brand { color: rgba(255, 253, 250, 0.9); font-size: 11px; font-weight: 900; letter-spacing: 0.24em; }
+      .p-new { padding: 3px 10px; color: var(--ink); background: var(--peach); border-radius: 999px; font-size: 10px; font-weight: 900; letter-spacing: 0.08em; }
+      .p-bottom { position: absolute; z-index: 2; right: 14px; bottom: 13px; left: 14px; display: grid; gap: 3px; }
+      .p-cat { justify-self: start; padding: 2px 9px; color: var(--pink); background: rgba(252, 196, 197, 0.16); border-radius: 999px; font-size: 10.5px; font-weight: 900; }
+      .p-name { overflow: hidden; font-family: var(--hand); font-size: calc(clamp(22px, 1.8vw, 27px) * var(--fs-title, 1)); font-weight: 700; letter-spacing: -0.03em; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 2px 12px rgba(10, 4, 2, 0.5); }
+      .p-meta { color: var(--peach); font-size: 11px; font-weight: 900; letter-spacing: 0.1em; }
+      .p-desc { display: -webkit-box; overflow: hidden; color: rgba(255, 253, 250, 0.78); font-size: 12.5px; font-weight: 600; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+      .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+      .item-card { position: relative; overflow: visible; padding: 8px 8px 42px; color: var(--ink); background: #fffaf3; border: 1px solid rgba(255, 255, 255, 0.96); box-shadow: 0 16px 40px rgba(10, 5, 3, 0.34); cursor: pointer; }
+      .item-card img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+      .item-card .ph { display: flex; width: 100%; aspect-ratio: 3 / 4; align-items: center; justify-content: center; background: #f2e6d6; font-size: 38px; }
+      .item-cap { position: absolute; right: 12px; bottom: 9px; left: 12px; }
+      .item-cap .name { overflow: hidden; font-family: var(--hand); font-size: 17px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+      .item-cap .desc { overflow: hidden; color: #8a6f5c; font-size: 11px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+      .lb-box { width: min(560px, 94vw); }
+      .lb-box img { display: block; width: 100%; max-height: 640px; object-fit: contain; background: #120b08; border-radius: 10px; }
+      .lb-name { margin-top: 12px; font-family: var(--hand); font-size: 26px; font-weight: 700; letter-spacing: -0.03em; }
+      .lb-desc { margin-top: 4px; color: rgba(255, 253, 250, 0.72); font-size: 14px; line-height: 1.7; }
+      .lb-close { display: inline-flex; min-height: 40px; align-items: center; margin-top: 14px; padding: 0 18px; color: var(--ink); background: var(--peach); border: 0; border-radius: 999px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+      @media (max-width: 560px) { .poster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .p-name { font-size: 18px; } }
+    </style>
+    <noscript><style>body{opacity:1!important}</style></noscript>
+  </head>
+  <body data-page="dress">
+    <script>
+      if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+      try { if (window.self !== window.top) document.body.classList.add('embed'); }
+      catch (e) { document.body.classList.add('embed'); }
+    </script>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="site-nav">
+      <div class="nav-shell">
+        <a class="nav-brand" href="../index.html">라무 <small>LAMU</small></a>
+        <nav class="nav-links" aria-label="주요 메뉴">
+          <a data-path href="../index.html">메인</a>
+          <a data-path href="../profile/">프로필</a>
+          <a data-path href="../schedule/">일정</a>
+          <a data-path href="../song/">노래책</a>
+          <a data-path href="../work/">업보</a>
+          <a data-path href="../diary/">일기</a>
+          <a data-path href="../dress/">옷장</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </nav>
+        <button class="theme-toggle" id="themeSwitch" type="button" aria-label="밝기 바꾸기"><span class="tt-knob"></span></button>
+        <a class="nav-live" id="nav-live" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">18:00 LIVE</a>
+        <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+
+    <main id="main" class="page page-main">
+      <div class="page-shell">
+        <header class="page-heading">
+          <div>
+            <p class="page-kicker">LOOKBOOK</p>
+            <h1 class="page-title">오늘의 라무<small>WARDROBE</small></h1>
+          </div>
+          <p class="page-lead" >새로 입은 옷은 포스터로 크게, 지난 옷은 폴라로이드 앨범으로 차곡차곡.</p>
+          <span class="ghost-word" aria-hidden="true">DRESS</span>
+        </header>
+
+
+        <section class="glass-panel">
+          <div class="panel-head">
+            <h2 class="panel-title">라무의 옷장</h2>
+            <span class="panel-note">NEW = 포스터 · 지난 옷 = 앨범</span>
+          </div>
+          <div class="dress-tools">
+            <div class="seg" id="mode-seg">
+              <button class="seg-btn active" type="button" data-mode="new">✨ 새 옷</button>
+              <button class="seg-btn" type="button" data-mode="old">🗂 기존 옷</button>
+            </div>
+            <div class="cat-row" id="cat-tabs"></div>
+          </div>
+          <div id="dress-body"></div>
+        </section>
+      </div>
+
+      <footer class="site-footer">
+        <span>© 2026 RAMU OFFICIAL</span>
+        <div class="footer-links">
+          <a id="foot-soop" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">SOOP</a>
+          <a id="foot-youtube" href="https://www.youtube.com/channel/UCB92EOmXDyyrulIm6cQm8AA" target="_blank" rel="noreferrer">YOUTUBE</a>
+          <a id="foot-cafe" href="https://cafe.naver.com/ramujjang" target="_blank" rel="noreferrer">CAFE</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </div>
+      </footer>
+    </main>
+
+    <div class="ov-mask" id="askmaskbg" onclick="closeAsk()"></div>
+    <div class="ov" id="askmask">
+      <div class="ov-box">
+        <p class="ask-kicker">MAIL TO RAMU</p>
+        <h2 class="ask-title">라무에게 한 장</h2>
+        <p class="ask-sub">남긴 내용은 라무만 확인해요.</p>
+        <textarea class="form-control" id="askmsg" rows="5" placeholder="하고 싶은 말을 적어주세요"></textarea>
+        <div class="ask-actions">
+          <button class="outline-button" type="button" onclick="closeAsk()">닫기</button>
+          <button class="soft-button" type="button" onclick="sendAsk()">보내기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ov-mask" id="lbbg" onclick="closeLb()"></div>
+    <div class="ov" id="lightbox">
+      <div class="ov-box lb-box">
+        <img id="lb-img" src="" alt="" referrerpolicy="no-referrer" />
+        <div class="lb-name" id="lb-name"></div>
+        <div class="lb-desc" id="lb-desc"></div>
+        <button class="lb-close" type="button" onclick="closeLb()">닫기</button>
+      </div>
+    </div>
+
+    <div id="fx" aria-hidden="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../supabase.js"></script>
+    <script src="../common.js"></script>
+    <script>
+      /* wardrobe — contract: 기능배선_카테고리 §6. CATS must match admin select#dr-cat + DRESS_CATS. */
+      const CATS = [ { key: 'hair', label: '헤어' }, { key: 'outfit', label: '의상' }, { key: 'lens', label: '렌즈' } ];
+      const LABELS = Object.fromEntries(CATS.map(c => [c.key, c.label]));
+      const PER_PAGE = 9;
+      function isNew(it) {
+        return (it.badges || []).some(function (b) {
+          var label = (b && (b.label != null ? b.label : b)) || '';
+          return String(label).trim().toUpperCase() === 'NEW';
+        });
+      }
+      let allItems = [], curCat = CATS[0].key, curMode = 'new', curPage = 1;
+
+      async function load() {
+        try {
+          const { data } = await db.from('dress_items').select('*').order('sort_order').order('created_at');
+          allItems = data || [];
+        } catch (e) { allItems = []; }
+        document.querySelectorAll('#mode-seg .seg-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            curMode = btn.dataset.mode; curPage = 1;
+            document.querySelectorAll('#mode-seg .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === curMode));
+            buildTabs(); render();
+          });
+        });
+        buildTabs(); render();
+      }
+      function viewItems() {
+        if (curMode === 'new')
+          return allItems.filter(i => i.category === curCat && isNew(i))
+            .slice().sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        return allItems.filter(i => i.category === curCat && !isNew(i));
+      }
+      function buildTabs() {
+        const wrap = document.getElementById('cat-tabs'); wrap.innerHTML = '';
+        CATS.forEach(c => {
+          const cnt = allItems.filter(i => i.category === c.key && (curMode === 'new' ? isNew(i) : !isNew(i))).length;
+          const b = document.createElement('button');
+          b.className = 'cat-tab' + (c.key === curCat ? ' active' : '');
+          b.innerHTML = `${esc(c.label)} <span class="cnt">${cnt}</span>`;
+          b.onclick = () => { curCat = c.key; curPage = 1; buildTabs(); render(); };
+          wrap.appendChild(b);
+        });
+      }
+      function render() {
+        const body = document.getElementById('dress-body');
+        const items = viewItems();
+        if (!items.length) {
+          body.innerHTML = (curMode === 'new')
+            ? `<div class="empty"><span class="empty-icon">👗</span>${LABELS[curCat] || ''} 새 옷이 아직 없어요<span class="empty-sub">admin에서 옷을 추가할 때 "✨ 새 옷으로 올리기"를 체크하면 여기 포스터로 떠요</span></div>`
+            : `<div class="empty"><span class="empty-icon">🗂</span>${LABELS[curCat] || ''} 항목이 아직 없어요</div>`;
+          enableIframeAutoHeight();
+          return;
+        }
+        const totalPages = Math.max(1, Math.ceil(items.length / PER_PAGE));
+        if (curPage > totalPages) curPage = 1;
+        const pageItems = items.slice((curPage - 1) * PER_PAGE, curPage * PER_PAGE);
+        const main = (curMode === 'new') ? posterHTML(pageItems) : gridHTML(pageItems);
+        let pager = '';
+        if (totalPages > 1) {
+          pager = '<div class="pg-row">';
+          for (let i = 1; i <= totalPages; i++) pager += `<button class="pg${i === curPage ? ' active' : ''}" data-pg="${i}">${i}</button>`;
+          pager += '</div>';
+        }
+        body.innerHTML = main + pager;
+        body.querySelectorAll('[data-idx]').forEach(el => {
+          el.addEventListener('click', () => { const it = pageItems[+el.dataset.idx]; if (it && it.image_url) openLb(it); });
+        });
+        body.querySelectorAll('.pg').forEach(btn => {
+          btn.addEventListener('click', () => { curPage = +btn.dataset.pg; render(); window.scrollTo(0, 0); });
+        });
+        enableIframeAutoHeight();
+      }
+      function gridHTML(pageItems) {
+        return '<div class="item-grid">' + pageItems.map((item, idx) => {
+          const hasImg = !!item.image_url;
+          const inner = hasImg ? `<img src="${esc(item.image_url)}" referrerpolicy="no-referrer" alt="${esc(item.name)}" loading="lazy">` : `<span class="ph">👗</span>`;
+          return `<div class="item-card${hasImg ? '' : ' no-img'}" data-idx="${idx}">
+            ${inner}
+            <div class="item-cap"><div class="name">${esc(item.name)}</div>
+            ${item.description ? `<div class="desc">${esc(item.description)}</div>` : ''}</div>
+          </div>`;
+        }).join('') + '</div>';
+      }
+      function posterHTML(pageItems) {
+        return '<div class="poster-grid">' + pageItems.map((it, idx) => {
+          const img = it.image_url ? `<img src="${esc(it.image_url)}" referrerpolicy="no-referrer" alt="${esc(it.name)}" loading="lazy">` : '<span class="ph-ph">👗</span>';
+          const cat = (it.category && LABELS[it.category]) ? `<span class="p-cat">${esc(LABELS[it.category])}</span>` : '';
+          const date = it.created_at ? `<span class="p-meta">${fmtDate(it.created_at)}</span>` : '';
+          return `<div class="poster${it.image_url ? '' : ' no-img'}" data-idx="${idx}">
+            ${img}
+            <div class="p-top"><span class="p-brand">RAMU</span><span class="p-new">✦ NEW</span></div>
+            <div class="p-bottom">${cat}<div class="p-name">${esc(it.name)}</div>
+            ${date}
+            ${it.description ? `<div class="p-desc">${esc(it.description)}</div>` : ''}</div>
+          </div>`;
+        }).join('') + '</div>';
+      }
+      function openLb(item) {
+        document.getElementById('lb-img').src = item.image_url;
+        document.getElementById('lb-name').textContent = item.name || '';
+        const d = document.getElementById('lb-desc');
+        d.textContent = item.description || '';
+        d.style.display = item.description ? 'block' : 'none';
+        document.getElementById('lbbg').classList.add('show');
+        placeOverlay(document.getElementById('lightbox'));
+      }
+      function closeLb() {
+        document.getElementById('lightbox').classList.remove('show');
+        document.getElementById('lbbg').classList.remove('show');
+      }
+      load();
+    </script>
+    <script src="../site.js"></script>
+    <script src="../fx.js"></script>
+
+  </body>
+</html>

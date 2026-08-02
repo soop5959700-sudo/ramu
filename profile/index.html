@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#201512" />
+    <meta name="description" content="사랑하는 토리들과 함께 SOOP에 사는 다람쥐, 라무의 프로필" />
+    <title>프로필 · 라무 LAMU</title>
+    <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .pf-grid { display: grid; grid-template-columns: minmax(300px, 0.85fr) 1.15fr; gap: 22px; align-items: start; }
+      .pf-left, .pf-right { display: grid; gap: 22px; }
+      .pf-photo { width: min(100%, 430px); margin: 0 auto; transform: rotate(-1.6deg); cursor: pointer; }
+      .pf-photo img { aspect-ratio: 3 / 4; }
+      .quote-text { margin-top: 12px; font-family: var(--hand); font-size: calc(clamp(24px, 1.9vw, 31px) * var(--fs-title, 1)); font-weight: 700; line-height: 1.35; letter-spacing: -0.03em; }
+      .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px 20px; }
+      .info-grid > div { display: grid; gap: 4px; }
+      .info-grid dt { color: var(--peach); font-size: calc(11px * var(--fs-label, 1)); font-weight: 900; letter-spacing: 0.16em; }
+      .info-grid dd { font-size: calc(15.5px * var(--fs-body, 1)); font-weight: 700; }
+      .dday-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; color: var(--ink); background: var(--pink); border-radius: 999px; font-size: 12px; font-weight: 900; }
+      .day-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+      .day-chip { display: inline-flex; min-width: 40px; min-height: 34px; align-items: center; justify-content: center; color: rgba(255, 253, 250, 0.4); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; font-size: 13px; font-weight: 800; }
+      .day-chip.on { color: var(--ink); background: var(--peach); border-color: transparent; }
+      .day-note { margin-left: auto; align-self: center; color: rgba(255, 253, 250, 0.5); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+      .about-text { font-size: calc(15.5px * var(--fs-body, 1)); font-weight: 500; line-height: 1.85; color: rgba(255, 253, 250, 0.88); }
+      .now-box { display: grid; gap: 6px; margin-top: 16px; padding: 14px 16px; background: rgba(255, 210, 154, 0.08); border: 1px dashed rgba(255, 210, 154, 0.4); border-radius: 12px; }
+      .now-box b { color: var(--peach); font-size: 11px; font-weight: 900; letter-spacing: 0.18em; }
+      .now-box p { font-size: calc(14.5px * var(--fs-body, 1)); font-weight: 600; line-height: 1.7; }
+      .stat-list { display: grid; gap: 12px; }
+      .stat { display: grid; grid-template-columns: 92px 1fr 34px; align-items: center; gap: 12px; }
+      .stat .sn { font-size: calc(13.5px * var(--fs-body, 1)); font-weight: 800; }
+      .stat .sb { position: relative; height: 9px; overflow: hidden; background: rgba(255, 255, 255, 0.09); border-radius: 999px; }
+      .stat .sb i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--peach), var(--pink)); border-radius: 999px; }
+      .stat .sv { color: var(--peach); font-size: 13px; font-weight: 900; text-align: right; }
+      .pf-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
+      .ms { display: flex; align-items: baseline; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+      .ms:last-child { border-bottom: 0; }
+      .ms .mst { flex: 0 0 auto; min-width: 62px; padding: 3px 10px; color: var(--peach); background: rgba(255, 210, 154, 0.12); border-radius: 999px; font-size: 11.5px; font-weight: 900; text-align: center; }
+      .ms .msc { font-size: calc(15px * var(--fs-body, 1)); font-weight: 700; }
+      .ms.done .mst { color: var(--ink); background: var(--peach); }
+      .ms.done .msc { color: rgba(255, 253, 250, 0.45); text-decoration: line-through; }
+      .tmi-row { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+      .tmi-row:last-of-type { border-bottom: 0; }
+      .tmi-row dt { color: var(--pink); font-size: calc(12px * var(--fs-label, 1)); font-weight: 900; letter-spacing: 0.12em; }
+      .tmi-row dd { font-size: calc(15px * var(--fs-body, 1)); font-weight: 700; }
+      .ovod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+      .ovod-card { overflow: hidden; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; }
+      .ovod-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+      .ovod-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+      .ovod-title { padding: 11px 14px; font-size: calc(14px * var(--fs-body, 1)); font-weight: 800; }
+      .link-row { display: flex; flex-wrap: wrap; gap: 9px; }
+      .pf-stack { display: grid; gap: 22px; margin-top: 22px; }
+      @media (max-width: 980px) { .pf-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 680px) {
+        .pf-duo { grid-template-columns: 1fr; }
+        .info-grid { grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+        .tmi-row { grid-template-columns: 104px 1fr; }
+        .stat { grid-template-columns: 78px 1fr 30px; }
+      }
+    </style>
+    <noscript><style>body{opacity:1!important}</style></noscript>
+  </head>
+  <body data-page="profile">
+    <script>
+      if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+      try { if (window.self !== window.top) document.body.classList.add('embed'); }
+      catch (e) { document.body.classList.add('embed'); }
+    </script>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="site-nav">
+      <div class="nav-shell">
+        <a class="nav-brand" href="../index.html">라무 <small>LAMU</small></a>
+        <nav class="nav-links" aria-label="주요 메뉴">
+          <a data-path href="../index.html">메인</a>
+          <a data-path href="../profile/">프로필</a>
+          <a data-path href="../schedule/">일정</a>
+          <a data-path href="../song/">노래책</a>
+          <a data-path href="../work/">업보</a>
+          <a data-path href="../diary/">일기</a>
+          <a data-path href="../dress/">옷장</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </nav>
+        <button class="theme-toggle" id="themeSwitch" type="button" aria-label="밝기 바꾸기"><span class="tt-knob"></span></button>
+        <a class="nav-live" id="nav-live" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">18:00 LIVE</a>
+        <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+
+    <main id="main" class="page page-main">
+      <div class="page-shell">
+        <header class="page-heading">
+          <div>
+            <p class="page-kicker">RAMU FILE</p>
+            <h1 class="page-title">라무는요<small>PROFILE OF A SQUIRREL</small></h1>
+          </div>
+          <p class="page-lead" id="page-lead">사랑하는 토리들과 함께 SOOP에 사는 다람쥐. 궁금한 건 여기 다 있어요.</p>
+          <span class="ghost-word" aria-hidden="true">RAMU</span>
+        </header>
+
+
+        <div class="pf-grid">
+          <div class="pf-left">
+            <figure class="paper-photo pf-photo" id="avatarWrap">
+              <img id="avatarImg" class="avatar" src="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" alt="라무 프로필 사진" referrerpolicy="no-referrer" />
+              <figcaption>라무 · SOOP의 다람쥐</figcaption>
+            </figure>
+
+            <section class="glass-panel">
+              <p class="section-kicker">TODAY'S RAMU</p>
+              <p class="quote-text" id="quote">오늘도 토리들이랑 도토리 모으는 날 🌰</p>
+            </section>
+
+            <section class="glass-panel">
+              <div class="panel-head">
+                <h2 class="panel-title">이런 다람쥐</h2>
+                <span class="panel-note">KEYWORDS</span>
+              </div>
+              <div class="pill-row" id="info-tags"></div>
+            </section>
+
+            <section class="glass-panel">
+              <div class="panel-head">
+                <h2 class="panel-title">라무의 문</h2>
+                <span class="panel-note">LINKS</span>
+              </div>
+              <div class="link-row">
+                <a class="soft-button" id="link-soop" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">SOOP 방송국 ↗</a>
+                <a class="outline-button" id="link-youtube" href="https://www.youtube.com/channel/UCB92EOmXDyyrulIm6cQm8AA" target="_blank" rel="noreferrer">YOUTUBE ↗</a>
+                <a class="outline-button" id="link-cafe" href="https://cafe.naver.com/ramujjang" target="_blank" rel="noreferrer">팬카페 ↗</a>
+                <a class="outline-button" id="link-fancim" href="https://fancim.me/celeb/profile.aspx?cu_id=rmfjsepakfdlqslek1" target="_blank" rel="noreferrer">팬심 ↗</a>
+                <a class="outline-button" id="link-x" href="#" target="_blank" rel="noreferrer" hidden>X ↗</a>
+              </div>
+            </section>
+          </div>
+
+          <div class="pf-right">
+            <section class="glass-panel">
+              <div class="panel-head">
+                <h2 class="panel-title">라무 파일</h2>
+                <span class="dday-pill">🎂 <b id="dday">D-DAY</b></span>
+              </div>
+              <dl class="info-grid">
+                <div><dt>NAME</dt><dd id="info-name">라무 (Lamu)</dd></div>
+                <div><dt>BIRTHDAY</dt><dd id="info-birth">12.01</dd></div>
+                <div><dt>DEBUT</dt><dd id="info-debut">2024.07.08</dd></div>
+                <div><dt>FANDOM</dt><dd id="info-fandom">토리</dd></div>
+                <div><dt>POSITION</dt><dd id="info-position">SOOP에 사는 다람쥐</dd></div>
+                <div><dt>CONTENT</dt><dd id="info-content">종합게임 · 버츄얼 · 소통</dd></div>
+                <div><dt>MAIN GAME</dt><dd id="info-game">종합게임</dd></div>
+                <div><dt>SIGNATURE</dt><dd id="info-song">사랑하게 될 거야</dd></div>
+                <div data-row hidden><dt>MBTI</dt><dd id="info-mbti"></dd></div>
+                <div data-row hidden><dt>AGENCY</dt><dd id="info-agency"></dd></div>
+                <div data-row hidden><dt>TEAM</dt><dd id="info-team"></dd></div>
+              </dl>
+              <div class="day-row">
+                <span class="day-chip" id="day-0">월</span>
+                <span class="day-chip" id="day-1">화</span>
+                <span class="day-chip" id="day-2">수</span>
+                <span class="day-chip" id="day-3">목</span>
+                <span class="day-chip" id="day-4">금</span>
+                <span class="day-chip" id="day-5">토</span>
+                <span class="day-chip" id="day-6">일</span>
+                <span class="day-note">EVERY DAY · 18:00</span>
+              </div>
+            </section>
+
+            <section class="glass-panel">
+              <div class="panel-head">
+                <h2 class="panel-title">라무는요</h2>
+                <span class="panel-note">ABOUT</span>
+              </div>
+              <p class="about-text" id="msg">사랑하는 토리들과 함께 SOOP에 사는 다람쥐. 밝게 웃다가 가끔 표독한 라무를 만나요.</p>
+              <div class="now-box">
+                <b>NOW</b>
+                <p id="now">매일 저녁 6시, 오늘도 방송 준비 중</p>
+              </div>
+            </section>
+
+            <section class="glass-panel">
+              <div class="panel-head">
+                <h2 class="panel-title">다람쥐 능력치</h2>
+                <span class="panel-note">STATUS</span>
+              </div>
+              <div class="stat-list" id="stats"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="pf-duo">
+          <section class="glass-panel">
+            <div class="panel-head">
+              <h2 class="panel-title">좋아해요</h2>
+              <span class="panel-note">LIKE</span>
+            </div>
+            <div class="pill-row" id="like-list"></div>
+          </section>
+          <section class="glass-panel">
+            <div class="panel-head">
+              <h2 class="panel-title">싫어해요</h2>
+              <span class="panel-note">DISLIKE</span>
+            </div>
+            <div class="pill-row" id="dislike-list"></div>
+          </section>
+        </div>
+
+        <div class="pf-stack">
+          <section class="glass-panel">
+            <div class="panel-head">
+              <h2 class="panel-title">도토리 목표</h2>
+              <span class="panel-note">MILESTONES</span>
+            </div>
+            <div id="milestones"></div>
+          </section>
+
+          <section class="glass-panel">
+            <div class="panel-head">
+              <h2 class="panel-title">다람쥐 TMI</h2>
+              <span class="panel-note">TMI</span>
+            </div>
+            <dl>
+              <div class="tmi-row" data-row hidden><dt>좋아하는 음식</dt><dd id="tmi-food"></dd></div>
+              <div class="tmi-row" data-row hidden><dt>요즘 듣는 노래</dt><dd id="tmi-song"></dd></div>
+              <div class="tmi-row" data-row hidden><dt>최근 읽은 책</dt><dd id="tmi-book"></dd></div>
+            </dl>
+            <div class="empty" id="tmi-empty"><span class="empty-icon">🌰</span>라무가 아직 TMI를 안 흘렸어요</div>
+          </section>
+
+          <section class="glass-panel" id="songs-card" style="display:none">
+            <div class="panel-head">
+              <h2 class="panel-title">라무의 노래 다시보기</h2>
+              <span class="panel-note">VOD</span>
+            </div>
+            <div class="ovod-grid" id="ovod-grid"></div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        <span>© 2026 RAMU OFFICIAL</span>
+        <div class="footer-links">
+          <a id="foot-soop" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">SOOP</a>
+          <a id="foot-youtube" href="https://www.youtube.com/channel/UCB92EOmXDyyrulIm6cQm8AA" target="_blank" rel="noreferrer">YOUTUBE</a>
+          <a id="foot-cafe" href="https://cafe.naver.com/ramujjang" target="_blank" rel="noreferrer">CAFE</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </div>
+      </footer>
+    </main>
+
+    <div class="ov-mask" id="askmaskbg" onclick="closeAsk()"></div>
+    <div class="ov" id="askmask">
+      <div class="ov-box">
+        <p class="ask-kicker">MAIL TO RAMU</p>
+        <h2 class="ask-title">라무에게 한 장</h2>
+        <p class="ask-sub">남긴 내용은 라무만 확인해요.</p>
+        <textarea class="form-control" id="askmsg" rows="5" placeholder="하고 싶은 말을 적어주세요"></textarea>
+        <div class="ask-actions">
+          <button class="outline-button" type="button" onclick="closeAsk()">닫기</button>
+          <button class="soft-button" type="button" onclick="sendAsk()">보내기</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="fx" aria-hidden="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../supabase.js"></script>
+    <script src="../common.js"></script>
+    <script>
+      /* profile loader — contract: 기능배선_메인프로필 §2~3 (keys, formats, type guards) */
+      const defaults = {
+        avatar: '',
+        'soop-id': '5959700',
+        'info-name': '라무 (Lamu)',
+        'info-catchphrase': '사랑하는 토리들과 함께 SOOP에 사는 다람쥐. 궁금한 건 여기 다 있어요.',
+        'info-birth': '12.01',
+        'info-debut': '2024.07.08',
+        'info-fandom': '토리',
+        'info-position': 'SOOP에 사는 다람쥐',
+        'info-content': '종합게임 · 버츄얼 · 소통',
+        'info-game': '종합게임',
+        'info-song': '사랑하게 될 거야',
+        'info-tags': '밝음, 짱구, 표독, 수은',
+        quote: '오늘도 토리들이랑 도토리 모으는 날 🌰',
+        msg: '사랑하는 토리들과 함께 SOOP에 사는 다람쥐. 밝게 웃다가 가끔 표독한 라무를 만나요.',
+        now: '매일 저녁 6시, 오늘도 방송 준비 중',
+        'like-list': '예쁜 말, 별풍선',
+        'dislike-list': '벌레, 나쁜 말',
+        stats: '텐션:95\n친화력:90\n표독력:70\n노래 욕심:80\n도토리 수집:100',
+        milestones: '달성|SOOP 데뷔 (2024.07.08)\n진행 중|토리들과 매일 저녁 6시\n준비 중|노래 클립 올리기',
+        days: '0,1,2,3,4,5,6'
+      };
+
+      function renderChips(id, v) {
+        const el = document.getElementById(id); if (!el) return;
+        const arr = Array.isArray(v) ? v : String(v || '').split(',');
+        el.innerHTML = arr.map(x => String(x).trim()).filter(Boolean)
+          .map(x => `<span class="pill">${esc(x)}</span>`).join('');
+      }
+      function renderTags(v) {
+        const el = document.getElementById('info-tags'); if (!el) return;
+        const arr = Array.isArray(v) ? v : String(v || '').split(',');
+        el.innerHTML = arr.map(x => String(x).trim()).filter(Boolean)
+          .map(x => `<span class="tag">${esc(x)}</span>`).join('');
+      }
+      function renderStats(v) {
+        const el = document.getElementById('stats'); if (!el) return;
+        const lines = typeof v === 'string' ? v.split('\n') : (Array.isArray(v) ? v : []);
+        el.innerHTML = lines.map(l => {
+          const s = typeof l === 'string' ? l : (l && l.name ? `${l.name}:${l.value}` : '');
+          const [name, num] = s.split(':');
+          if (!name || isNaN(parseInt(num))) return '';
+          const pct = Math.max(0, Math.min(100, parseInt(num)));
+          return `<div class="stat"><span class="sn">${esc(name.trim())}</span>
+            <span class="sb"><i style="width:${pct}%"></i></span><span class="sv">${pct}</span></div>`;
+        }).join('');
+      }
+      function renderMilestones(v) {
+        const el = document.getElementById('milestones'); if (!el) return;
+        const lines = typeof v === 'string' ? v.split('\n') : (Array.isArray(v) ? v : []);
+        el.innerHTML = lines.map(l => {
+          const s = String(l || ''); if (!s.trim()) return '';
+          const [st, ...rest] = s.split('|');
+          const done = st.trim() === '달성';
+          return `<div class="ms${done ? ' done' : ''}"><span class="mst">${esc(st.trim())}</span>
+            <span class="msc">${esc(rest.join('|').trim())}</span></div>`;
+        }).join('');
+      }
+
+      async function load() {
+        let saved = {};
+        try { saved = await window.profileData; } catch (e) {}
+        const d = { ...defaults, ...saved };
+        const val = k => (typeof d[k] === 'string' ? d[k].trim() : '');
+
+        const avatarUrl = val('avatar') || soopAvatar(val('soop-id'));
+        const img = document.getElementById('avatarImg');
+        if (avatarUrl && img) img.src = avatarUrl;
+
+        const lead = document.getElementById('page-lead');
+        if (lead && val('info-catchphrase')) lead.textContent = val('info-catchphrase');
+
+        ['info-name','info-birth','info-debut','info-fandom','info-position',
+         'info-content','info-game','info-song','info-mbti','info-agency','info-team',
+         'tmi-food','tmi-song','tmi-book'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const v = val(id);
+          if (v) el.textContent = v;
+          const row = el.closest('[data-row]');
+          if (row) row.hidden = !v;
+        });
+        const tmiShown = ['tmi-food','tmi-song','tmi-book'].some(id => val(id));
+        const tmiEmpty = document.getElementById('tmi-empty');
+        if (tmiEmpty) tmiEmpty.style.display = tmiShown ? 'none' : '';
+
+        ['quote','msg','now'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el && val(id)) el.innerHTML = esc(val(id)).replace(/\n/g, '<br>');
+        });
+
+        renderTags(d['info-tags']);
+        renderChips('like-list', d['like-list']);
+        renderChips('dislike-list', d['dislike-list']);
+        renderStats(d.stats);
+        renderMilestones(d.milestones);
+
+        const activeDays = String(d.days || '').split(',').map(x => x.trim());
+        for (let i = 0; i <= 6; i++) {   /* day-0 = Mon ... day-6 = Sun (admin standard) */
+          const chip = document.getElementById('day-' + i);
+          if (chip) chip.classList.toggle('on', activeDays.includes(String(i)));
+        }
+
+        ['link-soop','link-youtube','link-cafe','link-fancim','link-x'].forEach(k => {
+          const a = document.getElementById(k);
+          if (a && val(k)) { a.href = val(k); a.hidden = false; }
+        });
+
+        window.__birth = val('info-birth');
+        document.body.classList.add('ready');
+        if (window.parent !== window && typeof initIframeResize === 'function') initIframeResize();
+      }
+
+      async function loadOriginalSongs() {
+        const card = document.getElementById('songs-card');
+        const grid = document.getElementById('ovod-grid');
+        if (!card || !grid) return;
+        const list = await fetchAll('original_songs', { order: 'id', asc: false });
+        if (!list.length) { card.style.display = 'none'; return; }
+        card.style.display = '';
+        grid.innerHTML = list.map(s => {
+          const vid = (s.vod_id || '').trim();
+          return `<div class="ovod-card"><div class="ovod-embed">
+            <iframe src="https://vod.sooplive.co.kr/player/${vid}/embed?showChat=false&autoPlay=false&mutePlay=false"
+              frameborder="0" allowfullscreen scrolling="no"></iframe></div>
+            <div class="ovod-title">${esc(s.title)}</div></div>`;
+        }).join('');
+        enableIframeAutoHeight();
+      }
+
+      load();
+      loadOriginalSongs();
+    </script>
+    <script src="../site.js"></script>
+    <script src="../fx.js"></script>
+    <script>
+      /* birthday D-Day: must run after fx.js (fxDday) */
+      window.profileData.then(function () {
+        if (typeof fxDday !== 'function') return;
+        var n = fxDday(window.__birth || '12.01');
+        var el = document.getElementById('dday');
+        if (el && n !== null) el.textContent = (n === 0 ? '오늘 생일 🎉' : '생일 D-' + n);
+      });
+    </script>
+
+  </body>
+</html>

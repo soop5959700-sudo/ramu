@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#201512" />
+    <meta name="description" content="사랑하는 토리들과 함께 SOOP에 사는 다람쥐, 라무의 프로필 사이트" />
+    <meta property="og:title" content="라무 LAMU" />
+    <meta property="og:description" content="웃고 떠드는 중. 라무의 방송 일정과 기록을 만나보세요." />
+    <title>라무 LAMU</title>
+    <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./main.css" />
+    <noscript><style>body{opacity:1!important}</style></noscript>
+  </head>
+  <body data-page="main">
+    <script>
+      if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+      try { if (window.self !== window.top) document.body.classList.add('embed'); }
+      catch (e) { document.body.classList.add('embed'); }
+    </script>
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <header class="site-nav main-nav">
+      <div class="nav-shell">
+        <a class="nav-brand" href="./index.html">라무 <small>LAMU</small></a>
+        <nav class="nav-links" aria-label="주요 메뉴">
+          <a data-path href="./index.html">메인</a>
+          <a data-path href="./profile/">프로필</a>
+          <a data-path href="./schedule/">일정</a>
+          <a data-path href="./song/">노래책</a>
+          <a data-path href="./work/">업보</a>
+          <a data-path href="./diary/">일기</a>
+          <a data-path href="./dress/">옷장</a>
+          <a href="#" onclick="openAsk();return false;">문의</a>
+        </nav>
+        <button class="theme-toggle" id="themeSwitch" type="button" aria-label="밝기 바꾸기"><span class="tt-knob"></span></button>
+        <a class="nav-live" id="main-live" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">18:00 LIVE</a>
+        <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+
+    <div class="cover-bg" aria-hidden="true">
+      <img class="hero-image" src="./assets/scene-close.webp" alt="" />
+    </div>
+
+    <main id="main" class="main-cover">
+      <ol class="main-schedule" aria-label="이번 주 방송 일정">
+        <li class="schedule-label"><b>THIS WEEK</b><span id="main-week-note">EVERY DAY · 18:00</span></li>
+        <li data-day="0"><b>MON</b><strong>저챗</strong><small>18:00</small></li>
+        <li data-day="1"><b>TUE</b><strong>게임</strong><small>18:00</small></li>
+        <li data-day="2"><b>WED</b><strong>자유</strong><small>18:00</small></li>
+        <li data-day="3"><b>THU</b><strong>저챗</strong><small>18:00</small></li>
+        <li data-day="4"><b>FRI</b><strong>게임</strong><small>18:00</small></li>
+        <li data-day="5"><b>SAT</b><strong>특별</strong><small>18:00</small></li>
+        <li data-day="6"><b>SUN</b><strong>유동</strong><small>CHECK</small></li>
+      </ol>
+
+      <section class="main-copy">
+        <h1 class="main-title"><span id="main-title-txt">웃고<br />떠드는 중</span><small id="main-title-sub">HAPPY NOISE</small></h1>
+        <div class="main-about">
+          <b>ABOUT RAMU</b>
+          <p id="main-about">사랑하는 토리들과 함께 SOOP에 사는 다람쥐. 밝게 웃다가 가끔 표독한 라무를 만나요.</p>
+        </div>
+        <div class="main-next"><span>NEXT LIVE</span><strong id="main-next">오늘 · 18:00 KST</strong></div>
+        <div class="main-socials">
+          <a class="soft-button" id="link-soop" href="https://www.sooplive.com/station/5959700" target="_blank" rel="noreferrer">방송국 바로가기 ↗</a>
+          <a class="outline-button" id="link-youtube" href="https://www.youtube.com/channel/UCB92EOmXDyyrulIm6cQm8AA" target="_blank" rel="noreferrer">YOUTUBE ↗</a>
+        </div>
+      </section>
+
+      <div class="main-polaroids" aria-label="라무의 오늘 사진">
+        <figure class="paper-photo">
+          <img src="./assets/scene-stretch.webp" alt="기지개를 켜는 라무" />
+          <figcaption id="main-cap-1">웃음 한 장</figcaption>
+        </figure>
+        <figure class="paper-photo">
+          <img src="./assets/scene-sit.webp" alt="앉아서 웃는 라무" />
+          <figcaption id="main-cap-2">RAMU DAY</figcaption>
+        </figure>
+      </div>
+
+      <p class="cover-signature">라무 <small id="main-since">WITH TORI · SINCE 2024.07.08</small></p>
+    </main>
+    <div class="ov-mask" id="askmaskbg" onclick="closeAsk()"></div>
+    <div class="ov" id="askmask">
+      <div class="ov-box">
+        <p class="ask-kicker">MAIL TO RAMU</p>
+        <h2 class="ask-title">라무에게 한 장</h2>
+        <p class="ask-sub">남긴 내용은 라무만 확인해요.</p>
+        <textarea class="form-control" id="askmsg" rows="5" placeholder="하고 싶은 말을 적어주세요"></textarea>
+        <div class="ask-actions">
+          <button class="outline-button" type="button" onclick="closeAsk()">닫기</button>
+          <button class="soft-button" type="button" onclick="sendAsk()">보내기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="fx" aria-hidden="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="./supabase.js"></script>
+    <script>
+      /* helpers + inquiry modal (contract: 기능배선_공통 §7, §9) */
+      function esc(x){ return (x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+      function placeOverlay(ov){
+        var e = window.event, y = 200;
+        if (e) { y = (e.pageY != null ? e.pageY : (e.clientY || 0)); }
+        ov.style.top = Math.max(10, y - 80) + "px";
+        ov.classList.add("show");
+      }
+      function openAsk(){
+        document.getElementById("askmaskbg").classList.add("show");
+        placeOverlay(document.getElementById("askmask"));
+        setTimeout(function(){ var t = document.getElementById("askmsg"); if (t) t.focus(); }, 60);
+      }
+      function closeAsk(){
+        document.getElementById("askmask").classList.remove("show");
+        document.getElementById("askmaskbg").classList.remove("show");
+      }
+      async function sendAsk(){
+        var t = document.getElementById("askmsg");
+        var v = (t.value || "").trim();
+        if (!v){ alert("내용을 입력해주세요"); return; }
+        var ok = await insertRow("inquiries", { message: v });
+        alert(ok ? "라무에게 전해졌어요" : "전송에 실패했어요. 잠시 후 다시 시도해 주세요.");
+        if (ok){ t.value = ""; closeAsk(); }
+      }
+      document.getElementById("askmask").addEventListener("click", function(e){ if (e.target.id === "askmask") closeAsk(); });
+      document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeAsk(); });
+
+      /* main loader: profile.data hooks (기능배선_메인프로필 §3) */
+      (async function(){
+        var defaults = {
+          "soop-id": "5959700",
+          "info-debut": "2024.07.08",
+          "main-live": "18:00 LIVE",
+          "main-week-note": "EVERY DAY · 18:00",
+          "main-week": "저챗|18:00\n게임|18:00\n자유|18:00\n저챗|18:00\n게임|18:00\n특별|18:00\n유동|CHECK",
+          days: "0,1,2,3,4,5,6"
+        };
+        var saved = {};
+        try {
+          var r = await db.from("profile").select("data").eq("id", 1);
+          if (r.data && r.data[0] && r.data[0].data) saved = r.data[0].data;
+        } catch (e) {}
+        var d = Object.assign({}, defaults, saved);
+        function txt(id, v){ var el = document.getElementById(id); if (el && typeof v === "string" && v.trim()) el.textContent = v; }
+        function html(id, v){ var el = document.getElementById(id); if (el && typeof v === "string" && v.trim()) el.innerHTML = esc(v).replace(/\n/g, "<br>"); }
+
+        html("main-title-txt", d["main-title"]);
+        txt("main-title-sub", d["main-title-sub"]);
+        html("main-about", d["msg"]);
+        txt("main-next", d["main-next"]);
+        txt("main-live", d["main-live"]);
+        txt("main-week-note", d["main-week-note"]);
+        txt("main-cap-1", d["main-cap-1"]);
+        txt("main-cap-2", d["main-cap-2"]);
+
+        /* weekly strip: 7 lines "label|time", index 0 = Mon (admin days standard) */
+        var week = String(d["main-week"] || "").split("\n");
+        var active = String(d.days || "").split(",").map(function(x){ return x.trim(); });
+        for (var i = 0; i <= 6; i++) {
+          var row = document.querySelector('.main-schedule li[data-day="' + i + '"]');
+          if (!row) continue;
+          var parts = (week[i] || "").split("|");
+          if (parts[0] && parts[0].trim()) row.querySelector("strong").textContent = parts[0].trim();
+          if (parts[1] && parts[1].trim()) row.querySelector("small").textContent = parts[1].trim();
+          if (!active.includes(String(i))) {
+            row.style.opacity = "0.42";
+            row.querySelector("strong").textContent = "휴방";
+          }
+        }
+
+        if (typeof d["info-debut"] === "string" && d["info-debut"].trim()) {
+          var since = d["info-debut"].replace(/-/g, ".").trim();
+          txt("main-since", "WITH TORI · SINCE " + since);
+        }
+        ["link-soop", "link-youtube"].forEach(function(k){
+          var a = document.getElementById(k);
+          if (a && typeof d[k] === "string" && d[k].trim()) a.href = d[k];
+        });
+        document.body.classList.add("ready");
+        if (window.parent !== window && typeof initIframeResize === "function") initIframeResize();
+      })();
+
+      /* Photo layer must match the stage height exactly (CSS cannot express "as tall as that box"). */
+      (function syncCoverHeight(){
+        var stage = document.querySelector(".main-cover");
+        if (!stage) return;
+        var apply = function(){
+          var h = Math.round(stage.getBoundingClientRect().height);
+          if (h > 0) document.documentElement.style.setProperty("--cover-h", h + "px");
+        };
+        apply();
+        if (window.ResizeObserver) new ResizeObserver(apply).observe(stage);
+        else window.addEventListener("resize", apply);
+        window.addEventListener("load", apply);
+      })();
+
+      (function themeToggle(){
+        var box = document.getElementById("themeSwitch");
+        if (!box) return;
+        box.onclick = function(){
+          document.body.classList.toggle("light");
+          localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+        };
+      })();
+    </script>
+    <script src="./site.js"></script>
+    <script src="./fx.js"></script>
+  </body>
+</html>
