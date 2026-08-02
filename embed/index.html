@@ -6,17 +6,20 @@
     <title>라무 LAMU</title>
     <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/59/5959700/5959700.jpg" />
     <style>
-      html, body { margin: 0; padding: 0; height: 100%; background: #160f0d; overflow: hidden; }
-      #stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
-      #site { display: block; border: 0; background: #160f0d; transform-origin: top left; width: 100%; height: 100%; }
+      html, body { margin: 0; padding: 0; background: #160f0d; }
+      body { overflow-x: hidden; }
+      #stage { position: relative; width: 100%; overflow: hidden; }
+      #site { display: block; width: 100%; border: 0; background: #160f0d; transform-origin: top left; }
+      /* inside a post: one screen, no scrolling of our own */
+      body.framed, body.framed html { height: 100%; overflow: hidden; }
+      body.framed #stage { height: 100%; }
     </style>
   </head>
   <body>
     <div id="stage"><iframe id="site" scrolling="no" title="라무 LAMU"></iframe></div>
     <script>
-      /* One measurement, one assignment, then nothing moves again.
-         No observers, no timers, no messages to the parent: the SOOP app reloads the post
-         whenever the embedded frame keeps changing after load. */
+      /* The site is laid out at DESIGN px and scaled with a CSS transform, not with browser
+         zoom: in-app browsers reset zoom on their own, a transform they cannot touch. */
       (function () {
         var DESIGN = 1180;   /* layout width handed to the site (smaller = bigger type) */
         var WIDE = 980;      /* at or above this the site is shown 1:1 */
@@ -25,16 +28,58 @@
         var m = /[?&]p=([a-z]+)/.exec(location.search);
         var start = (m && pages.indexOf(m[1]) > -1) ? '../' + m[1] + '/?in=1' : '../index.html?in=1';
 
-        var frame = document.getElementById('site');
-        var w = document.documentElement.clientWidth || window.innerWidth || DESIGN;
-        var h = document.documentElement.clientHeight || window.innerHeight || 2500;
+        var framed = false;
+        try { framed = (window.self !== window.top); } catch (e) { framed = true; }
+        if (framed) document.body.className = 'framed';
 
-        if (w < WIDE) {
-          var scale = w / DESIGN;
-          frame.style.width = DESIGN + 'px';
-          frame.style.height = Math.round(h / scale) + 'px';
-          frame.style.transform = 'scale(' + scale + ')';
+        var frame = document.getElementById('site');
+        var stage = document.getElementById('stage');
+        var scale = 1;
+
+        function fit() {
+          var w = document.documentElement.clientWidth || window.innerWidth || DESIGN;
+          scale = w >= WIDE ? 1 : w / DESIGN;
+          frame.style.width = (scale === 1 ? w : DESIGN) + 'px';
+          frame.style.transform = scale === 1 ? 'none' : 'scale(' + scale + ')';
         }
+
+        function contentHeight() {
+          try {
+            var d = frame.contentDocument;
+            if (!d || !d.body) return 0;
+            var a = d.querySelector('.site-footer') || d.querySelector('.main-cover');
+            if (a) return Math.ceil(a.getBoundingClientRect().bottom + (d.defaultView ? d.defaultView.scrollY : 0));
+            return Math.max(d.body.scrollHeight, d.body.offsetHeight);
+          } catch (e) { return 0; }
+        }
+
+        function grow() {
+          var h = contentHeight();
+          if (!h) h = Math.round((window.innerHeight || 900) / scale);
+          frame.style.height = h + 'px';
+          stage.style.height = Math.ceil(h * scale) + 'px';
+        }
+
+        fit();
+
+        if (framed) {
+          /* Inside a SOOP post: fixed box, nothing changes after load — the post viewer
+             reloads the article whenever the embedded frame keeps resizing itself. */
+          var h = document.documentElement.clientHeight || window.innerHeight || 2500;
+          frame.style.height = Math.round(h / scale) + 'px';
+        } else {
+          /* Opened as a normal page: follow the real content height so it scrolls. */
+          frame.addEventListener('load', function () {
+            grow();
+            [300, 900, 2000].forEach(function (t) { setTimeout(grow, t); });
+            try {
+              var d = frame.contentDocument;
+              if (d && d.body && window.ResizeObserver) new ResizeObserver(grow).observe(d.body);
+            } catch (e) {}
+          });
+          window.addEventListener('resize', function () { fit(); grow(); });
+        }
+
         frame.src = start;
       })();
     </script>
