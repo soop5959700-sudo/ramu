@@ -64,17 +64,6 @@
         } catch (e) {}
       })();
 
-      /* SOOP app gives the post iframe the phone width, so media queries would pick the mobile
-         layout. Hand off to embed/, which lays the site out at 1180px and scales it to fit. */
-      (function () {
-        if (window.name === 'ramuInner') return;
-        var embedded = document.body.classList.contains('embed');
-        if (!embedded || window.innerWidth >= 980) return;
-        var seg = location.pathname.replace(/index\.html$/, '').split('/').filter(Boolean).pop() || '';
-        var known = ['profile', 'schedule', 'song', 'work', 'diary', 'dress'];
-        var q = known.indexOf(seg) > -1 ? '?p=' + seg : '';
-        location.replace('../' + 'embed/' + q);
-      })();
     </script>
     <a class="skip-link" href="#main">본문 바로가기</a>
     <header class="site-nav">

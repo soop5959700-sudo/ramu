@@ -86,27 +86,11 @@ function showToast(msg, duration = 2500) {
 }
 
 function initIframeResize() {
-  if (window.self === window.top) return;
-  var last = 0;
-  function send() {
-    var h = Math.ceil(Math.max(
-      document.body.scrollHeight, document.body.offsetHeight,
-      document.documentElement.offsetHeight));
-    if (!h || Math.abs(h - last) < 2) return;
-    last = h;
-    var p = window.parent;
-    try { p.postMessage(h, '*'); } catch (e) {}
-    try { p.postMessage({ type: 'resize', height: h }, '*'); } catch (e) {}
-    try { p.postMessage({ height: h }, '*'); } catch (e) {}
-    try { p.postMessage({ context: 'iframe.resize', height: h }, '*'); } catch (e) {}
-    try { p.postMessage('setHeight:' + h, '*'); } catch (e) {}
-  }
-  send();
-  window.addEventListener('load', send);
-  window.addEventListener('resize', send);
-  document.addEventListener('click', function () { setTimeout(send, 120); });
-  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
-  [200, 600, 1200, 2500].forEach(function (t) { setTimeout(send, t); });
+  /* Height reporting is disabled on purpose.
+     SOOP does not read these messages, but the post viewer's own script watches the
+     embed frame; a resize it makes fires our observer, which posts again — the app
+     ends up reloading the frame forever. The cover is ratio-locked and the wrapper in
+     embed/ measures its own height, so nothing here is needed. */
 }
 
 function enableIframeAutoHeight() { initIframeResize(); }

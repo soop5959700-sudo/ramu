@@ -18,7 +18,7 @@
       (function () {
         var pages = ['profile', 'schedule', 'song', 'work', 'diary', 'dress'];
         var m = /[?&]p=([a-z]+)/.exec(location.search);
-        var start = (m && pages.indexOf(m[1]) > -1) ? '../' + m[1] + '/' : '../index.html';
+        var start = (m && pages.indexOf(m[1]) > -1) ? '../' + m[1] + '/?in=1' : '../index.html?in=1';
         var f = document.getElementById('site');
         f.name = 'ramuInner';        /* pages check window.name and skip the wrapper redirect */
         f.src = start;
@@ -28,6 +28,14 @@
       /* SOOP app gives this frame the phone width, so the site inside would pick its mobile layout.
          The inner frame is laid out at DESIGN px (desktop breakpoints) and scaled down to fit. */
       (function () {
+        /* Never wrap a wrapper: if this file somehow ends up inside itself, stop. */
+        try {
+          if (window.self !== window.top && window.parent.document.getElementById('site')) {
+            location.replace('../index.html?in=1');
+            return;
+          }
+        } catch (e) {}
+
         var DESIGN = 1180;    /* layout width handed to the site */
         var WIDE = 980;       /* at or above this the site is shown 1:1 */
         var frame = document.getElementById('site');
@@ -59,17 +67,8 @@
           if (!h) h = Math.round(Math.min(window.innerHeight || 900, w * 0.5625 + 40) / scale);
           frame.style.height = h + 'px';
           stage.style.height = Math.ceil(h * scale) + 'px';
-          report(Math.ceil(h * scale));
         }
 
-        function report(h) {
-          if (window.parent === window) return;
-          var p = window.parent;
-          try { p.postMessage(h, '*'); } catch (e) {}
-          try { p.postMessage({ type: 'resize', height: h }, '*'); } catch (e) {}
-          try { p.postMessage({ height: h }, '*'); } catch (e) {}
-          try { p.postMessage('setHeight:' + h, '*'); } catch (e) {}
-        }
 
         function watch() {
           if (ro) { ro.disconnect(); ro = null; }
