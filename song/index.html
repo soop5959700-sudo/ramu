@@ -2,7 +2,9 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=1180" />
+    <!-- Phones lay the page out at 1180px and scale it to fit, so the desktop layout
+         (category row, two-column cards) is what shows up on mobile as well. -->
     <meta name="theme-color" content="#201512" />
     <meta name="description" content="가끔 부르는 라무의 노래책 — 난이도는 도토리 개수" />
     <title>노래책 · 라무 LAMU</title>
@@ -58,6 +60,23 @@
       if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
       try { if (window.self !== window.top) document.body.classList.add('embed'); }
       catch (e) { document.body.classList.add('embed'); }
+
+      /* A phone renders this page at the 1180px layout width above and scales it down.
+         Mark that case: the cover must lock to 16:9 instead of following the tall visual viewport. */
+      (function () {
+        if (document.body.classList.contains('embed')) return;   /* the wrapper handles that case */
+        try {
+          var screenW = (window.screen && window.screen.width) || window.innerWidth;
+          if (window.innerWidth > screenW + 40) {
+            document.body.classList.add('fit');
+            /* the cover page pins html/body to the viewport height; at this layout width that
+               would leave a long empty tail under the cover */
+            var d = document.documentElement;
+            d.style.height = 'auto'; d.style.overflow = 'visible';
+            document.body.style.height = 'auto'; document.body.style.overflow = 'visible';
+          }
+        } catch (e) {}
+      })();
 
       /* SOOP app gives the post iframe the phone width, so media queries would pick the mobile
          layout. Hand off to embed/, which lays the site out at 1180px and scales it to fit. */

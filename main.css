@@ -18,15 +18,25 @@ body {
   background: #1a100d;
 }
 
-body:not(.embed) .cover-bg {
+body:not(.embed):not(.fit) .cover-bg {
   height: 100svh;
   min-height: var(--cover-h, 0px);
 }
 
-/* Embed: photo height mirrors the stage (JS --cover-h); inset:0 would stretch with the iframe box. */
-body.embed .cover-bg {
+/* Embed / scaled-down phone view: photo height mirrors the stage (JS --cover-h). */
+body.embed .cover-bg,
+body.fit .cover-bg {
   height: var(--cover-h, 56.25vw);
 }
+
+/* Phone: the 16:9 cover is much shorter than the tall screen, so centre it instead of
+   leaving the whole lower half empty. */
+body.fit {
+  --cover-top: max(0px, calc((100svh - 56.25vw - var(--nav-height)) / 2));
+}
+
+body.fit .main-cover { margin-top: var(--cover-top); }
+body.fit .cover-bg { top: var(--cover-top); }
 
 .cover-bg .hero-image {
   position: absolute;
@@ -69,20 +79,22 @@ body.embed .cover-bg {
   container-type: inline-size;
 }
 
-/* Direct access keeps the approved full-window cover (the ratio lock is for embeds only). */
-body:not(.embed) .main-cover {
+/* Desktop browser keeps the approved full-window cover; the ratio lock is for embeds and
+   for phones, where the visual viewport is far taller than the 1180px layout width. */
+body:not(.embed):not(.fit) .main-cover {
   height: 100svh;
   min-height: 620px;
   aspect-ratio: auto;
 }
 
 /* Short windows: the title used to be capped by viewport height. vh is safe outside embeds. */
-body:not(.embed) .main-title {
+body:not(.embed):not(.fit) .main-title {
   font-size: max(30px, min(6.56cqw, 10.5vh));
 }
 
 /* Embed: the nav bar keeps its px height while the stage shrinks, so keep the strip clear of it. */
-body.embed .main-schedule {
+body.embed .main-schedule,
+body.fit .main-schedule {
   top: max(5.2%, calc(var(--nav-height) + 6px));
 }
 
@@ -313,17 +325,16 @@ main.main-cover.fx-enter {
     container-type: normal;
   }
 
-  body:not(.embed) .main-cover {
+  body:not(.embed):not(.fit) .main-cover {
     height: 100svh;
     min-height: 920px;
   }
 
-  body:not(.embed) .main-title {
+  body:not(.embed):not(.fit) .main-title {
     font-size: clamp(64px, 18vw, 94px);
   }
 
-  body:not(.embed) .cover-bg,
-  body.embed .cover-bg {
+  .cover-bg {
     height: var(--cover-h, 920px);
     min-height: 0;
   }
@@ -487,12 +498,11 @@ main.main-cover.fx-enter {
 
 @media (max-width: 520px) {
   .main-cover,
-  body:not(.embed) .main-cover {
+  body:not(.embed):not(.fit) .main-cover {
     min-height: 860px;
   }
 
-  body:not(.embed) .cover-bg,
-  body.embed .cover-bg {
+  .cover-bg {
     height: var(--cover-h, 860px);
   }
 

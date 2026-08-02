@@ -1256,7 +1256,8 @@ body.embed .site-nav { position: absolute; }
   body.nav-open .nav-links { visibility: visible; }
 }
 
-body.embed #fx {
+body.embed #fx,
+body.fit #fx {
   position: absolute;
   top: 0;
   right: 0;
@@ -1265,16 +1266,19 @@ body.embed #fx {
   height: min(100%, 900px);
 }
 
-body.embed #fx .fxfb { position: absolute; }
+body.embed #fx .fxfb,
+body.fit #fx .fxfb { position: absolute; }
 
-body.embed .ov-mask {
+body.embed .ov-mask,
+body.fit .ov-mask {
   position: absolute;
   top: 0;
   bottom: auto;
   height: 100%;
 }
 
-body.embed #fxload {
+body.embed #fxload,
+body.fit #fxload {
   position: absolute !important;
   top: 0 !important;
   right: 0 !important;
@@ -1285,4 +1289,13 @@ body.embed #fxload {
 
 /* vh inside an embed resolves against the whole iframe box; let the page be as tall as its content. */
 body.embed .page,
-body.embed .page-main { min-height: 0; }
+body.fit .page,
+body.embed .page-main,
+body.fit .page-main { min-height: 0; }
+
+/* The fixed 1180px viewport makes mobile browsers inflate text ("boost") to stay readable,
+   which breaks the fixed-width cards. Keep the sizes exactly as authored. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
