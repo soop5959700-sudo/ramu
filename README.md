@@ -8,6 +8,7 @@
 index.html   style.css   main.css   site.js   fx.js   common.js   supabase.js
 assets/                      메인 커버 이미지 (scene-*.webp)
 profile/  schedule/  song/  work/  diary/  dress/    각 index.html
+embed/index.html             SOOP 게시글용 래퍼 (PC 배치를 폭에 맞춰 축소)
 admin/index.html             관리자 (Supabase Auth 로그인)
 overlay/index.html           OBS "지금 트는 노래"
 supabase_setup.sql           DB 표 + 권한(RLS) — SQL Editor에서 실행
@@ -28,19 +29,37 @@ supabase_setup.sql           DB 표 + 권한(RLS) — SQL Editor에서 실행
 
 ## SOOP 게시글 임베드
 
+게시글에는 **`배포주소/embed/`** 를 넣습니다.
+
 ```html
-<iframe height="2400" scrolling="no" src="배포주소" style="width:100%;border:0;display:block;"></iframe>
+<iframe height="2400" scrolling="no" src="배포주소/embed/" style="width:100%;border:0;display:block;"></iframe>
 ```
 
-임베드에서는 메인 커버가 **16:9 비율로 고정**됩니다. iframe 높이를 몇으로 적든 사진 구도가
-늘어나지 않고, 남는 높이는 아래쪽 여백으로만 남습니다(스크롤 안 생김).
+`embed/`는 사이트를 감싸는 얇은 래퍼입니다. 하는 일은 두 가지뿐:
 
-| 용도 | 권장 height |
+- **폭이 980px 이상**(PC 게시글) → 사이트를 그대로 1:1로 보여줍니다
+- **폭이 980px 미만**(숲 앱·모바일) → 사이트를 **1180px PC 배치로 그린 뒤 폭에 맞춰 축소**합니다
+  숲 앱은 iframe 폭을 폰 화면 폭으로 주기 때문에, 그냥 넣으면 미디어쿼리가 모바일 배치를 고릅니다.
+  래퍼 안에서는 화면 폭과 무관하게 항상 PC 배치가 나옵니다. (글자가 작으니 앱 우측 상단 🔍 확대 사용)
+- 안쪽에서 페이지를 이동하면 높이를 다시 재서 맞춥니다.
+
+첫 화면을 지정하려면 `배포주소/embed/?p=profile` (`profile schedule song work diary dress`).
+
+축소 배율을 바꾸려면 `embed/index.html` 위쪽 두 값만 고치면 됩니다.
+
+```js
+var DESIGN = 1180;   // 앱에서 그릴 화면 폭 (작게 할수록 글자가 커짐)
+var WIDE   = 980;    // 이 폭 이상이면 축소 없이 1:1
+```
+
+| 상황 | 게시글 height |
 |---|---|
-| 메인 커버만 | **폭 × 0.5625 정도** (폭 1000이면 570 전후 — 여백 0) |
-| 서브 페이지까지 오갈 때 | **2400** (서브 스크롤 확보. 메인은 그대로 16:9 유지) |
+| PC·모바일 한 글에서 같이 | **2400** (PC 기준 가장 긴 프로필 페이지가 안 잘리는 값) |
+| 모바일만 볼 글 | 1000 정도면 충분 (폰에서 가장 긴 프로필이 약 860) |
 
-한 값만 적어야 하면 높은 쪽(2400)이 안전합니다 — 여백이 남는 편이 스크롤 두 개보다 낫습니다.
+폰에서는 콘텐츠가 짧아 아래에 어두운 여백이 남습니다. 배경색이 사이트와 같아 이어져 보입니다.
+
+주소를 직접 열 때(`배포주소/`)는 래퍼를 거치지 않으므로 폰에서는 모바일 전용 배치가 그대로 나옵니다.
 
 ## 관리자에서 바꿀 수 있는 것
 
