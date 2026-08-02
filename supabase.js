@@ -104,6 +104,7 @@ async function applyTheme(){
       'theme-main-dark': '--main-dark',
       'theme-main-deep': '--main-deep',
       'theme-main-light':'--main-light',
+      'theme-sub':      '--sub',
       'theme-bg':        '--bg',
       'theme-logo':      '--logo',
       'type-display':    '--fs-display',

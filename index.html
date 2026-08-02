@@ -62,7 +62,7 @@
     </header>
 
     <div class="cover-bg" aria-hidden="true">
-      <img class="hero-image" src="./assets/scene-close.webp" alt="" />
+      <img class="hero-image" id="main-hero" src="./assets/scene-close.webp" alt="" referrerpolicy="no-referrer" />
     </div>
 
     <main id="main" class="main-cover">
@@ -92,11 +92,11 @@
 
       <div class="main-polaroids" aria-label="라무의 오늘 사진">
         <figure class="paper-photo">
-          <img src="./assets/scene-stretch.webp" alt="기지개를 켜는 라무" />
+          <img id="main-photo-1" src="./assets/scene-stretch.webp" alt="" referrerpolicy="no-referrer" />
           <figcaption id="main-cap-1">웃음 한 장</figcaption>
         </figure>
         <figure class="paper-photo">
-          <img src="./assets/scene-sit.webp" alt="앉아서 웃는 라무" />
+          <img id="main-photo-2" src="./assets/scene-sit.webp" alt="" referrerpolicy="no-referrer" />
           <figcaption id="main-cap-2">RAMU DAY</figcaption>
         </figure>
       </div>
@@ -176,6 +176,13 @@
         txt("main-week-note", d["main-week-note"]);
         txt("main-cap-1", d["main-cap-1"]);
         txt("main-cap-2", d["main-cap-2"]);
+
+        /* cover images: admin URL wins over the bundled file */
+        [["main-hero", "main-hero"], ["main-photo-1", "main-photo-1"], ["main-photo-2", "main-photo-2"]].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === "string" && v.trim()) el.src = v.trim();
+        });
 
         /* weekly strip: 7 lines "label|time", index 0 = Mon (admin days standard) */
         var week = String(d["main-week"] || "").split("\n");

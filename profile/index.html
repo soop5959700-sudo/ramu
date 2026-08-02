@@ -113,8 +113,8 @@
       <div class="page-shell">
         <header class="page-heading">
           <div>
-            <p class="page-kicker">RAMU FILE</p>
-            <h1 class="page-title">라무는요<small>PROFILE OF A SQUIRREL</small></h1>
+            <p class="page-kicker" id="hd-kicker">RAMU FILE</p>
+            <h1 class="page-title"><span id="hd-title">라무는요</span><small id="hd-sub">PROFILE OF A SQUIRREL</small></h1>
           </div>
           <p class="page-lead" id="page-lead">사랑하는 토리들과 함께 SOOP에 사는 다람쥐. 궁금한 건 여기 다 있어요.</p>
           <span class="ghost-word" aria-hidden="true">RAMU</span>
@@ -455,6 +455,16 @@
 
       load();
       loadOriginalSongs();
+
+      /* page heading text comes from admin (hd-* keys per page) */
+      window.profileData.then(function (d) {
+        var P = 'profile';
+        [['hd-kicker', P + '-kicker'], ['hd-title', P + '-title'], ['hd-sub', P + '-sub'], ['page-lead', P + '-lead']].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === 'string' && v.trim()) el.textContent = v.trim();
+        });
+      });
     </script>
     <script src="../site.js"></script>
     <script src="../fx.js"></script>

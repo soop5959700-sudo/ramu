@@ -257,8 +257,8 @@ ul {
   min-height: 100svh;
   isolation: isolate;
   background:
-    radial-gradient(circle at 76% 18%, rgba(255, 210, 154, 0.16), transparent 28%),
-    linear-gradient(135deg, #211612, #120c0a 64%);
+    radial-gradient(circle at 76% 18%, color-mix(in srgb, var(--main) 18%, transparent), transparent 28%),
+    linear-gradient(135deg, color-mix(in srgb, var(--bg) 88%, #ffffff 12%), var(--bg) 64%);
 }
 
 .page::before {
@@ -691,9 +691,18 @@ body.ready [data-reveal]:not(.wait-reveal) {
   --shadow-hover: 0 18px 44px rgba(10, 4, 2, 0.4);
   --radius-md: 16px;
   --transition: 0.2s ease;
-  /* Site palette aliases: editing theme-main in admin recolors the site. */
+  /* Site palette aliases — every colour the design uses is derived from the admin palette,
+     so the 🎨 tab actually recolours the whole site (not just buttons). */
+  --sub: #fcc4c5;                 /* theme-sub */
   --peach: var(--main);
   --peach-bright: var(--main-light);
+  --pink: var(--sub);
+  --pink-hot: var(--sub);
+  --brown-950: var(--bg);
+  --brown-900: color-mix(in srgb, var(--bg) 82%, #ffffff 18%);
+  --brown-800: color-mix(in srgb, var(--bg) 70%, #ffffff 30%);
+  --brown-700: color-mix(in srgb, var(--bg) 58%, #ffffff 42%);
+  --cream: var(--card);
 }
 
 html, body { background: var(--bg); }
@@ -709,7 +718,8 @@ html, body { background: var(--bg); }
 .glass-panel {
   position: relative;
   padding: clamp(22px, 2.2vw, 34px);
-  background: linear-gradient(150deg, rgba(34, 21, 16, 0.86), rgba(21, 12, 10, 0.68));
+  background: linear-gradient(150deg, color-mix(in srgb, var(--bg) 82%, #ffffff 18%),
+                                      color-mix(in srgb, var(--bg) 94%, #ffffff 6%));
   border: 1px solid rgba(255, 235, 215, 0.14);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow);

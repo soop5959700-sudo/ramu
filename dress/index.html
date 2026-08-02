@@ -99,10 +99,10 @@
       <div class="page-shell">
         <header class="page-heading">
           <div>
-            <p class="page-kicker">LOOKBOOK</p>
-            <h1 class="page-title">오늘의 라무<small>WARDROBE</small></h1>
+            <p class="page-kicker" id="hd-kicker">LOOKBOOK</p>
+            <h1 class="page-title"><span id="hd-title">오늘의 라무</span><small id="hd-sub">WARDROBE</small></h1>
           </div>
-          <p class="page-lead" >새로 입은 옷은 포스터로 크게, 지난 옷은 폴라로이드 앨범으로 차곡차곡.</p>
+          <p class="page-lead" id="page-lead">새로 입은 옷은 포스터로 크게, 지난 옷은 폴라로이드 앨범으로 차곡차곡.</p>
           <span class="ghost-word" aria-hidden="true">DRESS</span>
         </header>
 
@@ -274,6 +274,16 @@
         document.getElementById('lbbg').classList.remove('show');
       }
       load();
+
+      /* page heading text comes from admin (hd-* keys per page) */
+      window.profileData.then(function (d) {
+        var P = 'dress';
+        [['hd-kicker', P + '-kicker'], ['hd-title', P + '-title'], ['hd-sub', P + '-sub'], ['page-lead', P + '-lead']].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === 'string' && v.trim()) el.textContent = v.trim();
+        });
+      });
     </script>
     <script src="../site.js"></script>
     <script src="../fx.js"></script>

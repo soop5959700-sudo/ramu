@@ -105,10 +105,10 @@
       <div class="page-shell">
         <header class="page-heading">
           <div>
-            <p class="page-kicker">SOMETIMES SINGS</p>
-            <h1 class="page-title">노래책<small>SONG BOOK</small></h1>
+            <p class="page-kicker" id="hd-kicker">SOMETIMES SINGS</p>
+            <h1 class="page-title"><span id="hd-title">노래책</span><small id="hd-sub">SONG BOOK</small></h1>
           </div>
-          <p class="page-lead" >가끔 부르는 라무의 노래들. 🌰 오늘의 선곡을 누르면 라무 대신 골라드려요.</p>
+          <p class="page-lead" id="page-lead">가끔 부르는 라무의 노래들. 🌰 오늘의 선곡을 누르면 라무 대신 골라드려요.</p>
           <span class="ghost-word" aria-hidden="true">SONG</span>
         </header>
 
@@ -251,6 +251,16 @@
         if (navigator.clipboard) navigator.clipboard.writeText(t);
       });
       init();
+
+      /* page heading text comes from admin (hd-* keys per page) */
+      window.profileData.then(function (d) {
+        var P = 'song';
+        [['hd-kicker', P + '-kicker'], ['hd-title', P + '-title'], ['hd-sub', P + '-sub'], ['page-lead', P + '-lead']].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === 'string' && v.trim()) el.textContent = v.trim();
+        });
+      });
     </script>
     <script src="../site.js"></script>
     <script src="../fx.js"></script>

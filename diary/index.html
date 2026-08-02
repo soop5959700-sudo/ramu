@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../style.css" />
     <style>
       .diary-list { display: grid; gap: 14px; }
-      .diary-item { position: relative; overflow: hidden; background: linear-gradient(150deg, rgba(34, 21, 16, 0.86), rgba(21, 12, 10, 0.68)); border: 1px solid rgba(255, 235, 215, 0.14); border-radius: var(--radius-md); box-shadow: var(--shadow); }
+      .diary-item { position: relative; overflow: hidden; background: linear-gradient(150deg, color-mix(in srgb, var(--bg) 82%, #ffffff 18%), color-mix(in srgb, var(--bg) 94%, #ffffff 6%)); border: 1px solid rgba(255, 235, 215, 0.14); border-radius: var(--radius-md); box-shadow: var(--shadow); }
       .diary-item::before { position: absolute; z-index: 2; top: -11px; left: 30px; width: 66px; height: 20px; background: linear-gradient(90deg, rgba(255, 206, 165, 0.5), rgba(255, 242, 207, 0.85), rgba(255, 193, 181, 0.5)); border: 1px solid rgba(255, 255, 255, 0.35); content: ""; transform: rotate(-2deg); }
       .diary-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 13px; padding: 18px 20px; cursor: pointer; }
       .diary-mood { font-size: 22px; }
@@ -91,10 +91,10 @@
       <div class="page-shell">
         <header class="page-heading">
           <div>
-            <p class="page-kicker">DAILY NUTS</p>
-            <h1 class="page-title">라무 일지<small>DIARY</small></h1>
+            <p class="page-kicker" id="hd-kicker">DAILY NUTS</p>
+            <h1 class="page-title"><span id="hd-title">라무 일지</span><small id="hd-sub">DIARY</small></h1>
           </div>
-          <p class="page-lead" >그날그날의 라무를 눌러서 펼쳐보세요. 토리의 답장도 남길 수 있어요.</p>
+          <p class="page-lead" id="page-lead">그날그날의 라무를 눌러서 펼쳐보세요. 토리의 답장도 남길 수 있어요.</p>
           <span class="ghost-word" aria-hidden="true">DIARY</span>
         </header>
 
@@ -206,6 +206,16 @@
         if (ok) { msgEl.value = ''; loadComments(diaryId); } else alert('답장 등록에 실패했어요');
       }
       init();
+
+      /* page heading text comes from admin (hd-* keys per page) */
+      window.profileData.then(function (d) {
+        var P = 'diary';
+        [['hd-kicker', P + '-kicker'], ['hd-title', P + '-title'], ['hd-sub', P + '-sub'], ['page-lead', P + '-lead']].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === 'string' && v.trim()) el.textContent = v.trim();
+        });
+      });
     </script>
     <script src="../site.js"></script>
     <script src="../fx.js"></script>

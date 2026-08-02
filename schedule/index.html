@@ -121,10 +121,10 @@
       <div class="page-shell">
         <header class="page-heading">
           <div>
-            <p class="page-kicker">ON AIR PLAN</p>
-            <h1 class="page-title">이번 달의 라무<small>SCHEDULE</small></h1>
+            <p class="page-kicker" id="hd-kicker">ON AIR PLAN</p>
+            <h1 class="page-title"><span id="hd-title">이번 달의 라무</span><small id="hd-sub">SCHEDULE</small></h1>
           </div>
-          <p class="page-lead" >일정이 제일 중요하니까 제일 크게. 달력 칸을 누르면 그날의 라무가 나와요.</p>
+          <p class="page-lead" id="page-lead">일정이 제일 중요하니까 제일 크게. 달력 칸을 누르면 그날의 라무가 나와요.</p>
           <span class="ghost-word" aria-hidden="true">CALENDAR</span>
         </header>
 
@@ -286,6 +286,16 @@
         document.getElementById('ovbg').classList.remove('show');
       }
       init();
+
+      /* page heading text comes from admin (hd-* keys per page) */
+      window.profileData.then(function (d) {
+        var P = 'schedule';
+        [['hd-kicker', P + '-kicker'], ['hd-title', P + '-title'], ['hd-sub', P + '-sub'], ['page-lead', P + '-lead']].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === 'string' && v.trim()) el.textContent = v.trim();
+        });
+      });
     </script>
     <script src="../site.js"></script>
     <script src="../fx.js"></script>

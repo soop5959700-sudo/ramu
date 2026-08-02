@@ -88,10 +88,10 @@
       <div class="page-shell">
         <header class="page-heading">
           <div>
-            <p class="page-kicker">KARMA LEDGER</p>
-            <h1 class="page-title">도토리 장부<small>UPBO</small></h1>
+            <p class="page-kicker" id="hd-kicker">KARMA LEDGER</p>
+            <h1 class="page-title"><span id="hd-title">도토리 장부</span><small id="hd-sub">UPBO</small></h1>
           </div>
-          <p class="page-lead" >토리들이 쌓은 업보를 도토리처럼 차곡차곡. 카드를 누르면 내역이 펼쳐져요.</p>
+          <p class="page-lead" id="page-lead">토리들이 쌓은 업보를 도토리처럼 차곡차곡. 카드를 누르면 내역이 펼쳐져요.</p>
           <span class="ghost-word" aria-hidden="true">UPBO</span>
         </header>
 
@@ -200,6 +200,16 @@
         render(viewers.filter(v => (v.nickname || '').toLowerCase().includes(q) || (v.soop_id || '').toLowerCase().includes(q)));
       });
       init();
+
+      /* page heading text comes from admin (hd-* keys per page) */
+      window.profileData.then(function (d) {
+        var P = 'work';
+        [['hd-kicker', P + '-kicker'], ['hd-title', P + '-title'], ['hd-sub', P + '-sub'], ['page-lead', P + '-lead']].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          var v = d[pair[1]];
+          if (el && typeof v === 'string' && v.trim()) el.textContent = v.trim();
+        });
+      });
     </script>
     <script src="../site.js"></script>
     <script src="../fx.js"></script>
