@@ -10,12 +10,21 @@
       body { overflow-x: hidden; }
       #stage { position: relative; width: 100%; overflow: hidden; }
       #site { display: block; width: 100%; border: 0; background: #160f0d; transform-origin: top left; }
+      /* short-lived marker: tells us at a glance that this page, not the plain one, opened */
+      #mark { position: fixed; z-index: 9; top: 8px; left: 8px; padding: 4px 10px; color: #2c201c;
+        background: #ffd29a; border-radius: 999px; font: 800 11px/1 -apple-system, sans-serif;
+        letter-spacing: .12em; animation: markOut 3s ease forwards; pointer-events: none; }
+      @keyframes markOut { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
       /* inside a post: one screen, no scrolling of our own */
       body.framed, body.framed html { height: 100%; overflow: hidden; }
       body.framed #stage { height: 100%; }
+      #info { position: fixed; z-index: 9; top: 0; right: 0; left: 0; padding: 3px 6px; color: #ffd29a;
+              background: rgba(0,0,0,.72); font: 700 11px/1.4 monospace; letter-spacing: .02em; }
     </style>
   </head>
   <body>
+    <div id="mark">PC VIEW</div>
+    <div id="info"></div>
     <div id="stage"><iframe id="site" scrolling="no" title="라무 LAMU"></iframe></div>
     <script>
       /* The site is laid out at DESIGN px and scaled with a CSS transform, not with browser
@@ -23,6 +32,7 @@
       (function () {
         var DESIGN = 1180;   /* layout width handed to the site (smaller = bigger type) */
         var WIDE = 980;      /* at or above this the site is shown 1:1 */
+        var SHOW_INFO = true;  /* temporary readout for the SOOP in-app browser; set false to hide */
 
         var pages = ['profile', 'schedule', 'song', 'work', 'diary', 'dress'];
         var m = /[?&]p=([a-z]+)/.exec(location.search);
@@ -36,11 +46,36 @@
         var stage = document.getElementById('stage');
         var scale = 1;
 
+        function viewWidth() {
+          /* visualViewport is the only number some in-app browsers report honestly */
+          var vv = window.visualViewport;
+          var a = vv && vv.width ? Math.round(vv.width) : 0;
+          var b = document.documentElement.clientWidth || 0;
+          var c = window.innerWidth || 0;
+          return a || b || c || DESIGN;
+        }
+
         function fit() {
-          var w = document.documentElement.clientWidth || window.innerWidth || DESIGN;
+          var w = viewWidth();
           scale = w >= WIDE ? 1 : w / DESIGN;
           frame.style.width = (scale === 1 ? w : DESIGN) + 'px';
           frame.style.transform = scale === 1 ? 'none' : 'scale(' + scale + ')';
+          report();
+        }
+
+        function report() {
+          if (!SHOW_INFO) return;
+          var el = document.getElementById('info');
+          if (!el) return;
+          var vv = window.visualViewport;
+          el.textContent =
+            'vv=' + (vv ? Math.round(vv.width) + '/' + (vv.scale || 1).toFixed(2) : '-') +
+            ' cw=' + (document.documentElement.clientWidth || 0) +
+            ' iw=' + (window.innerWidth || 0) +
+            ' sw=' + ((window.screen && window.screen.width) || 0) +
+            ' dpr=' + (window.devicePixelRatio || 0) +
+            ' scale=' + scale.toFixed(3) +
+            ' framed=' + (framed ? 'Y' : 'N');
         }
 
         function contentHeight() {
@@ -78,8 +113,10 @@
             } catch (e) {}
           });
           window.addEventListener('resize', function () { fit(); grow(); });
+          if (window.visualViewport) window.visualViewport.addEventListener('resize', report);
         }
 
+        report();
         frame.src = start;
       })();
     </script>
