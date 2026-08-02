@@ -3,7 +3,7 @@
    wrapper nor a wide viewport works there. Instead:
      1. drop every mobile media rule from our own stylesheets, so the desktop rules win
      2. lay the document out at DESIGN px
-     3. shrink it with CSS zoom, which is content-level and survives the webview's zoom reset
+     3. shrink it with a CSS transform, which no webview zoom reset can undo
    Load order: right after the stylesheets, before the page scripts. */
 
 (function () {
@@ -39,6 +39,8 @@
     var css =
       'body.pcview .page-shell, body.pcview .site-footer { width: 1085px; margin-left: auto; margin-right: auto; }' +
       'body.pcview .nav-shell { padding: 0 46px; }' +
+      'body.pcview .site-nav { position: absolute; }' +
+      'body.pcview #fx, body.pcview #fxload { position: absolute; }' +
       'body.pcview .main-cover { width: 1180px !important; height: 664px !important; min-height: 0 !important; aspect-ratio: auto !important; margin: 0 auto !important; }' +
       'body.pcview .cover-bg { height: 664px !important; min-height: 0 !important; top: 0 !important; }' +
       'body.pcview .page-heading { padding: 106px 0 53px; }' +
@@ -52,20 +54,56 @@
     document.head.appendChild(st);
   }
 
+  /* Width must be captured before the body is widened: once the document overflows, mobile
+     browsers grow the layout viewport, and reading innerWidth again would feed that growth
+     back into the scale (measured 1089 instead of 375 -> almost no shrink at all). */
+  var BASE = (function () {
+    var sw = (window.screen && window.screen.width) || 0;
+    var iw = window.innerWidth || document.documentElement.clientWidth || 0;
+    if (sw && iw) return Math.min(sw, iw);
+    return sw || iw || DESIGN;
+  })();
+
+  function scale() { return BASE / DESIGN; }
+
+  /* transform, not zoom: some in-app webviews ignore `zoom` entirely */
+  function place() {
+    if (!document.body) return;
+    var s = scale();
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.width = BASE + 'px';   /* pin the layout viewport */
+    document.body.style.width = DESIGN + 'px';
+    document.body.style.transformOrigin = '0 0';
+    document.body.style.transform = 'scale(' + s + ')';
+    sizeDocument();
+  }
+
+  /* the transform is visual only, so the document keeps its unscaled height: restate it */
+  function sizeDocument() {
+    if (!document.body) return;
+    var s = scale();
+    var anchor = document.querySelector('.site-footer') || document.querySelector('.main-cover');
+    var h = anchor ? Math.ceil(anchor.getBoundingClientRect().bottom / s + window.scrollY / s) : document.body.scrollHeight;
+    document.documentElement.style.height = Math.ceil(h * s) + 'px';
+  }
+
   function apply() {
     injectOverrides();
     for (var i = 0; i < document.styleSheets.length; i++) stripMobileRules(document.styleSheets[i]);
-    document.documentElement.style.zoom = (window.innerWidth / DESIGN);
-    if (document.body) {
-      document.body.style.minWidth = DESIGN + 'px';
-      document.body.classList.add('pcview');
-    }
+    if (document.body) document.body.classList.add('pcview');
+    place();
   }
 
   apply();
   document.addEventListener('DOMContentLoaded', apply);
-  window.addEventListener('load', apply);
+  window.addEventListener('load', function () {
+    apply();
+    [300, 900, 2000].forEach(function (t) { setTimeout(sizeDocument, t); });
+    if (window.ResizeObserver && document.body) new ResizeObserver(sizeDocument).observe(document.body);
+  });
   window.addEventListener('resize', function () {
-    document.documentElement.style.zoom = (window.innerWidth / DESIGN);
+    var sw = (window.screen && window.screen.width) || 0;
+    if (sw) BASE = sw;                                     /* orientation change only */
+    place();
   });
 })();
