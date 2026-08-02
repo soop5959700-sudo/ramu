@@ -19,7 +19,9 @@
         var pages = ['profile', 'schedule', 'song', 'work', 'diary', 'dress'];
         var m = /[?&]p=([a-z]+)/.exec(location.search);
         var start = (m && pages.indexOf(m[1]) > -1) ? '../' + m[1] + '/' : '../index.html';
-        document.getElementById('site').src = start;
+        var f = document.getElementById('site');
+        f.name = 'ramuInner';        /* pages check window.name and skip the wrapper redirect */
+        f.src = start;
       })();
     </script>
     <script>
